@@ -7,6 +7,9 @@ build/
 
 .metals/
 metals/
+.bloop/
+bloop/
+.scalafmt.conf
 
 # eclipse
 build
