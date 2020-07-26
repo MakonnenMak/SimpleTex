@@ -5,6 +5,7 @@
   * language and tokenize it. The following phase will be the responsbility
   * of the grammar implemented in the parser2 file.
   */
+package simpletex.lexer
 import scala.util.parsing.combinator._
 
 sealed trait SimpleTexToken
@@ -75,15 +76,4 @@ class SimpleTexLexer extends RegexParsers {
     }
   }
 
-}
-
-//boldItalics | bold | italics | citation | references | layoutSection | section | subsection,
-object TestSimpleTexLexer extends SimpleTexLexer {
-  def main(args: Array[String]) = {
-    println(
-      TestSimpleTexLexer(
-        "# asdasd \n ## asdas \n ***BOLDITALICS*** *ITALICS* *ITALICS2* **BOLD1**"
-      )
-    );
-  }
 }
