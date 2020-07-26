@@ -19,35 +19,39 @@ case class BOLDITALICS(text: String) extends SimpleTexToken
 case class CITATION(source: String) extends SimpleTexToken
 case class REFERENCE(label: String) extends SimpleTexToken
 
+trait SimpleTexCompilationError
+case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
+
 class SimpleTexLexer extends RegexParsers {
   def section: Parser[SECTION] = {
-    "^# (.*)$".r ^^ { title => SECTION(title.slice(2, title.length)) }
+    "^# (.*)\n".r ^^ { title => SECTION(title.slice(2, title.length)) }
   }
 
   // TODO parse out the ## etc for all
   // above method is ugly but works
   def subsection: Parser[SUBSECTION] = {
-    "^## (.*)$".r ^^ { title => SUBSECTION(title) }
+    "^## (.*)\n".r ^^ { title => SUBSECTION(title) }
   }
 
   def layout: Parser[LAYOUT] = {
     "^%% (.*)\n".r ^^ { layout => LAYOUT(layout) }
   }
 
-  def layoutSection: Parser[SECTIONLAYOUT] = layout ~ section ^^ {
-    case layout ~ section => SECTIONLAYOUT(section, layout)
-  }
+  def layoutSection: Parser[SECTIONLAYOUT] =
+    layout ~ section ^^ {
+      case layout ~ section => SECTIONLAYOUT(section, layout)
+    }
 
   def italics: Parser[ITALICS] = {
-    "\\*(.*)\\*".r ^^ { text => ITALICS(text) }
+    "\\*(.*?)\\*".r ^^ { text => ITALICS(text) }
   }
 
   def bold: Parser[BOLD] = {
-    "\\*\\*(.*)\\*\\*".r ^^ { text => BOLD(text) }
+    "\\*\\*(.*?)\\*\\*".r ^^ { text => BOLD(text) }
   }
 
   def boldItalics: Parser[BOLDITALICS] = {
-    "\\*\\*\\*(.*)\\*\\*\\*".r ^^ { text => BOLDITALICS(text) }
+    "\\*\\*\\*(.*?)\\*\\*\\*".r ^^ { text => BOLDITALICS(text) }
   }
 
   def citation: Parser[CITATION] = {
@@ -57,16 +61,29 @@ class SimpleTexLexer extends RegexParsers {
   def references: Parser[REFERENCE] = {
     "@ref\\{([^}]+)\\}".r ^^ { label => REFERENCE(label) }
   }
+  def tokens: Parser[List[SimpleTexToken]] = {
+    phrase(
+      rep1(
+        boldItalics | bold | italics | citation | references | layoutSection | section | subsection
+      )
+    )
+  }
+  def apply(code: String): Either[SimpleTexLexerError, List[SimpleTexToken]] = {
+    parse(tokens, code) match {
+      case NoSuccess(msg, next)  => Left(SimpleTexLexerError(msg))
+      case Success(result, next) => Right(result);
+    }
+  }
 
 }
 
 //boldItalics | bold | italics | citation | references | layoutSection | section | subsection,
 object TestSimpleTexLexer extends SimpleTexLexer {
   def main(args: Array[String]) = {
-    parse(citation, "@cite{thisthing}@cite{thisotherhitng}") match {
-      case Success(matched, _) => println(matched)
-      case Failure(msg, _)     => println("FAILURE: " + msg)
-      case Error(msg, _)       => println("ERROR: " + msg)
-    }
+    println(
+      TestSimpleTexLexer(
+        "# asdasd \n ## asdas \n ***BOLDITALICS*** *ITALICS* *ITALICS2* **BOLD1**"
+      )
+    );
   }
 }
