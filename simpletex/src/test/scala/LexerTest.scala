@@ -1,8 +1,13 @@
 import org.scalatest.FunSuite;
-import simpletex.lexer.SimpleTexLexer
+import simpletex.lexer._
 
-class LexerTest extends FunSuite {
-  test("two plus two should be four") {
-    assert(2 + 2 == 4);
+class LexerSectionTests extends FunSuite {
+  test("A section on a single line should produce a SECTION object") {
+    assert(
+      SimpleTexLexer("# section name \n") match {
+        case Left(value)  => false
+        case Right(value) => true
+      }
+    )
   }
 }
