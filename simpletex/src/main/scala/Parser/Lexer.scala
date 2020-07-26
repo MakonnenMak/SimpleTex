@@ -23,7 +23,7 @@ case class REFERENCE(label: String) extends SimpleTexToken
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
 
-class SimpleTexLexer extends RegexParsers {
+case object SimpleTexLexer extends RegexParsers {
   def section: Parser[SECTION] = {
     "^# (.*)\n".r ^^ { title => SECTION(title.slice(2, title.length)) }
   }

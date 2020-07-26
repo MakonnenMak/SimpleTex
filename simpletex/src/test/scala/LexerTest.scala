@@ -1,5 +1,6 @@
+package simpletex.lexer;
 import org.scalatest.FunSuite;
-import simpletex.lexer._
+import simpletex.lexer._;
 
 class LexerSectionTests extends FunSuite {
   test("A section on a single line should produce a SECTION object") {
