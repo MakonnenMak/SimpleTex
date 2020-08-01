@@ -31,11 +31,11 @@ case object SimpleTexLexer extends RegexParsers {
   // TODO parse out the ## etc for all
   // above method is ugly but works
   def subsection: Parser[SUBSECTION] = {
-    "^## (.*)\n".r ^^ { title => SUBSECTION(title) }
+    "^## (.*)\n".r ^^ { title => SUBSECTION(title.slice(3, title.length)) }
   }
 
   def layout: Parser[LAYOUT] = {
-    "^%% (.*)\n".r ^^ { layout => LAYOUT(layout) }
+    "^%% (.*)\n".r ^^ { layout => LAYOUT(layout.slice(3, layout.length)) }
   }
 
   def layoutSection: Parser[SECTIONLAYOUT] =
@@ -60,7 +60,9 @@ case object SimpleTexLexer extends RegexParsers {
   }
 
   def references: Parser[REFERENCE] = {
-    "@ref\\{([^}]+)\\}".r ^^ { label => REFERENCE(label) }
+    "@ref\\{([^}]+)\\}".r ^^ { label =>
+      REFERENCE(label.slice(5, label.length - 1))
+    }
   }
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
