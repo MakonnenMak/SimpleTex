@@ -5,6 +5,10 @@ project/
 target/
 build/
 
+.swn
+.swo
+.swp
+
 .metals/
 metals/
 .bloop/
