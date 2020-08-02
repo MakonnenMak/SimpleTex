@@ -33,5 +33,18 @@ class LexerSectionTests extends AnyFunSuite {
       case Right(_) => assert(false, "We returned more than one references")
     }
   }
+}
+
+class LexerImageTests extends AnyFunSuite {
+
+  test("A simple image should have caption, label, and path") {
+    SimpleTexLexer("![My Caption][My Label](/this/is/a/path)") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the image out of the string")
+      case Right(value :: Nil) =>
+        assert(value.equals(IMAGE("My Caption", "My Label", "/this/is/a/path")))
+      case Right(_) => assert(false, "We returned more than one images")
+    }
+  }
 
 }
