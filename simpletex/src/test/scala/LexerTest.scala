@@ -46,5 +46,44 @@ class LexerImageTests extends AnyFunSuite {
       case Right(_) => assert(false, "We returned more than one images")
     }
   }
+}
+
+class LexerEquationTests extends AnyFunSuite {
+
+  test("A simple equation is content surrounded by $ signs") {
+
+    SimpleTexLexer("$1+1=2$") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the equation out of the string")
+      case Right(value :: Nil) =>
+        assert(value.equals(EQUATION("1+1=2")))
+      case Right(_) => assert(false, "We returned more than one equation")
+
+    }
+
+  }
+}
+
+class LexerContentTest extends AnyFunSuite {
+
+  test("Anything should match the content if not matched by others") {
+    SimpleTexLexer("hello world") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the content out of the string")
+      case Right(CONTENT("hello world") :: Nil) =>
+        assert(true)
+      case Right(_) => assert(false, "We returned more than one content")
+    }
+  }
+
+  test("An item shouldn't match content if a section can match it") {
+    SimpleTexLexer("# hello world \n") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the content out of the string")
+      case Right(SECTION("hello world \n") :: Nil) => assert(true)
+      case Right(a)                                => assert(false, s"We returned more than one content $a")
+    }
+
+  }
 
 }
