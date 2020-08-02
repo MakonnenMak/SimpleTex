@@ -23,6 +23,7 @@ case class IMAGE(label: String, caption: String, path: String)
     extends SimpleTexToken
 case class Text(content: String) extends SimpleTexToken
 case class EQUATION(equation: String) extends SimpleTexToken
+case class CONTENT(content: String) extends SimpleTexToken
 
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
@@ -71,7 +72,7 @@ case object SimpleTexLexer extends RegexParsers {
 
   def image: Parser[IMAGE] = {
     val matcher = """!\[(.*)\]\[(.*)\]\((.*)\)""".r
-    "!\\[(.*)\\]\\[(.*)\\]\\((.*)\\)".r ^^ { content =>
+    "!\\[(.+)\\]\\[(.+)\\]\\((.+)\\)".r ^^ { content =>
       content match {
         case matcher(caption, label, path) => IMAGE(caption, label, path)
       }
@@ -79,10 +80,22 @@ case object SimpleTexLexer extends RegexParsers {
 
   }
 
+  def equation: Parser[EQUATION] = {
+    "\\$.+\\$".r ^^ { equation =>
+      EQUATION(equation.slice(1, equation.length - 1))
+    }
+
+  }
+
+  def content: Parser[CONTENT] = {
+    ".+".r ^^ { content => CONTENT(content) }
+
+  }
+
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalics | bold | italics | citation | reference | layoutSection | section | subsection | image
+        boldItalics | bold | italics | citation | reference | layoutSection | section | subsection | image | equation | content
       )
     )
   }
