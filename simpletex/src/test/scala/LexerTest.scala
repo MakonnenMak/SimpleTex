@@ -83,7 +83,24 @@ class LexerContentTest extends AnyFunSuite {
       case Right(SECTION("hello world \n") :: Nil) => assert(true)
       case Right(a)                                => assert(false, s"We returned more than one content $a")
     }
+  }
 
+  test("A section followed by some content should form a list") {
+
+    SimpleTexLexer("# hello section \n some content here") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the content and section out of the string")
+      case Right(
+          SECTION("hello section \n") :: CONTENT("some content here") :: Nil
+          ) =>
+        assert(true)
+      case Right(a) =>
+        assert(
+          false,
+          s"We returned incorrect types or more items than expected $a"
+        )
+
+    }
   }
 
 }
