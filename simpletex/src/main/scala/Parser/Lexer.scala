@@ -19,6 +19,10 @@ case class ITALICS(text: String) extends SimpleTexToken
 case class BOLDITALICS(text: String) extends SimpleTexToken
 case class CITATION(source: String) extends SimpleTexToken
 case class REFERENCE(label: String) extends SimpleTexToken
+case class IMAGE(label: String, caption: String, path: String)
+    extends SimpleTexToken
+case class Text(content: String) extends SimpleTexToken
+case class EQUATION(equation: String) extends SimpleTexToken
 
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
@@ -59,15 +63,26 @@ case object SimpleTexLexer extends RegexParsers {
     "@cite\\{([^}]+)\\}*".r ^^ { citation => CITATION(citation) }
   }
 
-  def references: Parser[REFERENCE] = {
+  def reference: Parser[REFERENCE] = {
     "@ref\\{([^}]+)\\}".r ^^ { label =>
       REFERENCE(label.slice(5, label.length - 1))
     }
   }
+
+  def image: Parser[IMAGE] = {
+    val matcher = """!\[(.*)\]\[(.*)\]\((.*)\)""".r
+    "!\\[(.*)\\]\\[(.*)\\]\\((.*)\\)".r ^^ { content =>
+      content match {
+        case matcher(caption, label, path) => IMAGE(caption, label, path)
+      }
+    }
+
+  }
+
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalics | bold | italics | citation | references | layoutSection | section | subsection
+        boldItalics | bold | italics | citation | reference | layoutSection | section | subsection | image
       )
     )
   }
