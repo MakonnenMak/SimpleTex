@@ -55,12 +55,11 @@ class LexerBoldTest extends AnyFunSuite {
     }
   }
 
-  test("Empty space surrounded by ** shouldn't parse as a bold") {
+  test("Empty space surrounded by ** should parse as a bold") {
     SimpleTexLexer("** **") match {
-      case Left(value) => fail("Lexer couldn't understand this")
-      case Right(List(BOLD(" "))) =>
-        fail("We incorrectly parsed this into a bold")
-      case Right(_) => assert(true)
+      case Left(value)            => fail("Lexer couldn't understand this")
+      case Right(List(BOLD(" "))) => assert(true)
+      case Right(a)               => fail(s"We parsed it into something else: $a")
     }
   }
 
@@ -100,6 +99,14 @@ class LexerItalicsTests extends AnyFunSuite {
       case Right(List(ITALICS(" some text here "))) => assert(true)
       case Right(a) =>
         fail(s"Prased into something else: $a")
+    }
+  }
+
+  test("Empty space surrounded by * should parse as a italics") {
+    SimpleTexLexer("* *") match {
+      case Left(value)               => fail("Lexer couldn't understand this")
+      case Right(List(ITALICS(" "))) => assert(true)
+      case Right(a)                  => fail(s"We parsed it into something else: $a")
     }
   }
 
@@ -150,8 +157,8 @@ class LexerContentTest extends AnyFunSuite {
     SimpleTexLexer("# hello world \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the content out of the string")
-      case Right(SECTION("hello world \n") :: Nil) => assert(true)
-      case Right(a)                                => assert(false, s"We returned more than one content $a")
+      case Right(List(SECTION("hello world \n"))) => assert(true)
+      case Right(a)                               => assert(false, s"We returned more than one content $a")
     }
   }
 
