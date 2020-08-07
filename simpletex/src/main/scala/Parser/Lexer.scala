@@ -49,15 +49,17 @@ case object SimpleTexLexer extends RegexParsers {
     }
 
   def italics: Parser[ITALICS] = {
-    "\\*(.*?)\\*".r ^^ { text => ITALICS(text) }
+    "\\*(.*?)\\*".r ^^ { text => ITALICS(text.slice(1, text.length - 1)) }
   }
 
   def bold: Parser[BOLD] = {
-    "\\*\\*(.*?)\\*\\*".r ^^ { text => BOLD(text) }
+    "\\*\\*(.*?)\\*\\*".r ^^ { text => BOLD(text.slice(2, text.length - 2)) }
   }
 
   def boldItalics: Parser[BOLDITALICS] = {
-    "\\*\\*\\*(.*?)\\*\\*\\*".r ^^ { text => BOLDITALICS(text) }
+    "\\*\\*\\*(.*?)\\*\\*\\*".r ^^ { text =>
+      BOLDITALICS(text.slice(3, text.length - 3))
+    }
   }
 
   def citation: Parser[CITATION] = {
