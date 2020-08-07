@@ -12,7 +12,6 @@ sealed trait SimpleTexToken
 
 case class SECTION(title: String) extends SimpleTexToken
 case class LAYOUT(layout: String) extends SimpleTexToken
-case class SECTIONLAYOUT(title: SECTION, layout: LAYOUT) extends SimpleTexToken
 case class SUBSECTION(title: String) extends SimpleTexToken
 case class BOLD(text: String) extends SimpleTexToken
 case class ITALICS(text: String) extends SimpleTexToken
@@ -42,11 +41,6 @@ case object SimpleTexLexer extends RegexParsers {
   def layout: Parser[LAYOUT] = {
     "^%% (.*)\n".r ^^ { layout => LAYOUT(layout.slice(3, layout.length)) }
   }
-
-  def layoutSection: Parser[SECTIONLAYOUT] =
-    layout ~ section ^^ {
-      case layout ~ section => SECTIONLAYOUT(section, layout)
-    }
 
   def italics: Parser[ITALICS] = {
     "\\*(.+)\\*".r ^^ { text => ITALICS(text.slice(1, text.length - 1)) }
@@ -97,7 +91,7 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalics | bold | italics | citation | reference | layoutSection | section | subsection | image | equation | content
+        boldItalics | bold | italics | citation | reference | section | subsection | image | equation | content
       )
     )
   }
