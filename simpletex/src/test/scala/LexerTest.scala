@@ -35,7 +35,76 @@ class LexerSectionTests extends AnyFunSuite {
   }
 }
 
-class LexerBoldTest extends AnyFunSuite {}
+class LexerBoldTest extends AnyFunSuite {
+  test("A text surrounded by two * should be bold") {
+    SimpleTexLexer("**some bold text**") match {
+      case Left(value)                         => fail("Didn't parse the bold text")
+      case Right(List(BOLD("some bold text"))) => assert(true)
+      case Right(a)                            => fail(s"Parsed but not the right object: $a")
+    }
+  }
+
+  test("A text with only one pair of * shouldn't parse as a bold") {
+    SimpleTexLexer("**some bold text") match {
+      case Left(value) => fail("Lexer couldn't understand this")
+      case Right(List(BOLD("some bold te"))) =>
+        fail("We parsed this into a bold incorrectly")
+      case Right(List(CONTENT("**some bold text"))) => assert(true)
+      case Right(_) =>
+        fail("We parsed this into something other than a content object")
+    }
+  }
+
+  test("Empty space surrounded by ** shouldn't parse as a bold") {
+    SimpleTexLexer("** **") match {
+      case Left(value) => fail("Lexer couldn't understand this")
+      case Right(List(BOLD(" "))) =>
+        fail("We incorrectly parsed this into a bold")
+      case Right(_) => assert(true)
+    }
+  }
+
+  test("Space doesn't matter as long as we have at least one non-empty char") {
+    SimpleTexLexer("** some space surrounded **") match {
+      case Left(value)                                  => fail("Lexer couldn't understand this")
+      case Right(List(BOLD(" some space surrounded "))) => assert(true)
+      case Right(a)                                     => fail(s"Prased into something else: $a")
+    }
+  }
+
+}
+
+class LexerItalicsTests extends AnyFunSuite {
+  test("Text surrounded by one * should be italics") {
+    SimpleTexLexer("*some text*") match {
+      case Left(value)                       => fail("Lexer couldn't understand this")
+      case Right(List(ITALICS("some text"))) => assert(true)
+      case Right(a)                          => fail(s"Prased into something else: $a")
+    }
+  }
+
+  test("Text surrounded with a single * shouldn't be italics") {
+    SimpleTexLexer("*some text here") match {
+      case Left(value) => fail("Lexer couldn't understand this")
+      case Right(List(ITALICS(" "))) =>
+        fail("We incorrectly parsed this into a italics")
+      case Right(_) => assert(true)
+    }
+  }
+
+  test(
+    "Empty space doesn't matter as long as we have at least one non-empty space"
+  ) {
+    SimpleTexLexer("* some text here *") match {
+      case Left(value)                              => fail("Lexer couldn't understand this")
+      case Right(List(ITALICS(" some text here "))) => assert(true)
+      case Right(a) =>
+        fail(s"Prased into something else: $a")
+    }
+  }
+
+}
+
 class LexerImageTests extends AnyFunSuite {
 
   test("A simple image should have caption, label, and path") {
