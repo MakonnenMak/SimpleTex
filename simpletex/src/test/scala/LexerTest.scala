@@ -8,7 +8,7 @@ class LexerSectionTests extends AnyFunSuite {
     SimpleTexLexer("# section name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the section out of the string")
-      case Right(value :: Nil) =>
+      case Right(List(value)) =>
         assert(value.equals(SECTION("section name \n")))
       case Right(_) => assert(false, "We returned more than one section")
     }
@@ -17,7 +17,7 @@ class LexerSectionTests extends AnyFunSuite {
     SimpleTexLexer("## subsection name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the subsection out of the string")
-      case Right(value :: Nil) =>
+      case Right(List(value)) =>
         assert(value.equals(SUBSECTION("subsection name \n")))
       case Right(_) => assert(false, "We returned more than one subsection")
     }
@@ -28,20 +28,21 @@ class LexerSectionTests extends AnyFunSuite {
     SimpleTexLexer("@ref{some reference material} \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the reference out of the string")
-      case Right(value :: Nil) =>
+      case Right(List(value)) =>
         assert(value.equals(REFERENCE("some reference material")))
       case Right(_) => assert(false, "We returned more than one references")
     }
   }
 }
 
+class LexerBoldTest extends AnyFunSuite {}
 class LexerImageTests extends AnyFunSuite {
 
   test("A simple image should have caption, label, and path") {
     SimpleTexLexer("![My Caption][My Label](/this/is/a/path)") match {
       case Left(value) =>
         assert(false, "Didn't parse the image out of the string")
-      case Right(value :: Nil) =>
+      case Right(List(value)) =>
         assert(value.equals(IMAGE("My Caption", "My Label", "/this/is/a/path")))
       case Right(_) => assert(false, "We returned more than one images")
     }
@@ -55,7 +56,7 @@ class LexerEquationTests extends AnyFunSuite {
     SimpleTexLexer("$1+1=2$") match {
       case Left(value) =>
         assert(false, "Didn't parse the equation out of the string")
-      case Right(value :: Nil) =>
+      case Right(List(value)) =>
         assert(value.equals(EQUATION("1+1=2")))
       case Right(_) => assert(false, "We returned more than one equation")
 
