@@ -48,20 +48,16 @@ case object SimpleTexLexer extends RegexParsers {
       case layout ~ section => SECTIONLAYOUT(section, layout)
     }
 
-  // TODO we should probably switch to /S for everything but this doesn't work for
-  // everything.
   def italics: Parser[ITALICS] = {
-    "\\*(.*\\S+.*)\\*".r ^^ { text => ITALICS(text.slice(1, text.length - 1)) }
+    "\\*(.+)\\*".r ^^ { text => ITALICS(text.slice(1, text.length - 1)) }
   }
 
   def bold: Parser[BOLD] = {
-    "\\*\\*(.*\\S+.*)\\*\\*".r ^^ { text =>
-      BOLD(text.slice(2, text.length - 2))
-    }
+    "\\*\\*(.+)\\*\\*".r ^^ { text => BOLD(text.slice(2, text.length - 2)) }
   }
 
   def boldItalics: Parser[BOLDITALICS] = {
-    "\\*\\*\\*(.*\\S+.*)\\*\\*\\*".r ^^ { text =>
+    "\\*\\*\\*(.+)\\*\\*\\*".r ^^ { text =>
       BOLDITALICS(text.slice(3, text.length - 3))
     }
   }
