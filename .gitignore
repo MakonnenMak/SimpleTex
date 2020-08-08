@@ -4,6 +4,7 @@ bin/
 project/
 target/
 build/
+.project.json
 
 .swn
 .swo
