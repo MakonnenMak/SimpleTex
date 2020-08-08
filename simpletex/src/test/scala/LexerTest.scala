@@ -8,18 +8,16 @@ class LexerSectionTests extends AnyFunSuite {
     SimpleTexLexer("# section name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the section out of the string")
-      case Right(List(value)) =>
-        assert(value.equals(SECTION("section name \n")))
-      case Right(_) => assert(false, "We returned more than one section")
+      case Right(List(SECTION("section name \n"))) => assert(true)
+      case Right(_)                                => assert(false, "We returned more than one section")
     }
   }
   test("A sub-section on a single line should produce a SUBSECTION object") {
     SimpleTexLexer("## subsection name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the subsection out of the string")
-      case Right(List(value)) =>
-        assert(value.equals(SUBSECTION("subsection name \n")))
-      case Right(_) => assert(false, "We returned more than one subsection")
+      case Right(List(SUBSECTION("subsection name \n"))) => assert(true)
+      case Right(_)                                      => assert(false, "We returned more than one subsection")
     }
   }
   test(
@@ -28,9 +26,8 @@ class LexerSectionTests extends AnyFunSuite {
     SimpleTexLexer("@ref{some reference material} \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the reference out of the string")
-      case Right(List(value)) =>
-        assert(value.equals(REFERENCE("some reference material")))
-      case Right(_) => assert(false, "We returned more than one references")
+      case Right(List(REFERENCE("some reference material"))) => assert(true)
+      case Right(_)                                          => assert(false, "We returned more than one references")
     }
   }
 }
@@ -97,8 +94,7 @@ class LexerItalicsTests extends AnyFunSuite {
     SimpleTexLexer("* some text here *") match {
       case Left(value)                              => fail("Lexer couldn't understand this")
       case Right(List(ITALICS(" some text here "))) => assert(true)
-      case Right(a) =>
-        fail(s"Prased into something else: $a")
+      case Right(a)                                 => fail(s"Prased into something else: $a")
     }
   }
 
@@ -128,16 +124,12 @@ class LexerImageTests extends AnyFunSuite {
 class LexerEquationTests extends AnyFunSuite {
 
   test("A simple equation is content surrounded by $ signs") {
-
     SimpleTexLexer("$1+1=2$") match {
       case Left(value) =>
         assert(false, "Didn't parse the equation out of the string")
-      case Right(List(value)) =>
-        assert(value.equals(EQUATION("1+1=2")))
-      case Right(_) => assert(false, "We returned more than one equation")
-
+      case Right(List(value)) => assert(value.equals(EQUATION("1+1=2")))
+      case Right(_)           => assert(false, "We returned more than one equation")
     }
-
   }
 }
 
@@ -162,7 +154,6 @@ class LexerContentTest extends AnyFunSuite {
   }
 
   test("A section followed by some content should form a list") {
-
     SimpleTexLexer("# hello section \n some content here") match {
       case Left(value) =>
         assert(false, "Didn't parse the content and section out of the string")
@@ -175,8 +166,6 @@ class LexerContentTest extends AnyFunSuite {
           false,
           s"We returned incorrect types or more items than expected $a"
         )
-
     }
   }
-
 }
