@@ -138,7 +138,7 @@ class LexerLayoutTest extends AnyFunSuite {
     SimpleTexLexer("%% layout1 \n") match {
       case Left(value) =>
         assert(false, "Didn't parse layout out of string")
-      case Right(List(value)) => assert(value.equals(LAYOUT("layout1")))
+      case Right(List(value)) => assert(value.equals(LAYOUT("layout1 \n")))
       case Right(_)           => assert(false, "We returned more than one layout")
     }
   }
