@@ -17,5 +17,6 @@ object SimpleTexParser extends Parsers {
     override def rest: Reader[SimpleTexToken] =
       new SimpleTexTokenReader(tokens.tail)
   }
+
 }
 
