@@ -133,6 +133,17 @@ class LexerEquationTests extends AnyFunSuite {
   }
 }
 
+class LexerLayoutTest extends AnyFunSuite {
+  test("A simple layout definition") {
+    SimpleTexLexer("%% layout1 \n") match {
+      case Left(value) =>
+        assert(false, "Didn't parse layout out of string")
+      case Right(List(value)) => assert(value.equals(LAYOUT("layout1")))
+      case Right(_)           => assert(false, "We returned more than one layout")
+    }
+  }
+}
+
 class LexerContentTest extends AnyFunSuite {
 
   test("Anything should match the content if not matched by others") {
@@ -158,7 +169,7 @@ class LexerContentTest extends AnyFunSuite {
       case Left(value) =>
         assert(false, "Didn't parse the content and section out of the string")
       case Right(
-          List(SECTION("hello section \n"), CONTENT("some content here"))
+            List(SECTION("hello section \n"), CONTENT("some content here"))
           ) =>
         assert(true)
       case Right(a) =>
