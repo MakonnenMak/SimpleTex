@@ -12,7 +12,7 @@ object SimpleTexParser extends Parsers {
   class SimpleTexTokenReader(tokens: Seq[SimpleTexToken])
       extends Reader[SimpleTexToken] {
     override def first: SimpleTexToken = tokens.head
-    override def atEnd: SimpleTexToken = tokens.isEmpty
+    override def atEnd: Boolean = tokens.isEmpty
     override def pos: Position = NoPosition
     override def rest: Reader[SimpleTexToken] =
       new SimpleTexTokenReader(tokens.tail)
