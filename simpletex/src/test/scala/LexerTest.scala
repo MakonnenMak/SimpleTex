@@ -32,7 +32,7 @@ class LexerSectionTests extends AnyFunSuite {
   }
 }
 
-class LexerBoldTest extends AnyFunSuite {
+class LexerBoldTests extends AnyFunSuite {
   test("A text surrounded by two * should be bold") {
     SimpleTexLexer("**some bold text**") match {
       case Left(value)                         => fail("Didn't parse the bold text")
@@ -144,7 +144,7 @@ class LexerLayoutTest extends AnyFunSuite {
   }
 }
 
-class LexerContentTest extends AnyFunSuite {
+class LexerContentTests extends AnyFunSuite {
 
   test("Anything should match the content if not matched by others") {
     SimpleTexLexer("hello world") match {
