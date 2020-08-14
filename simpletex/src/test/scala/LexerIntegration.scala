@@ -105,6 +105,7 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
     }
   }
 
+  /*
   test("A section with a citation below it") {
     SimpleTexLexer(
       "# section name \n @cite{some citation} "
@@ -124,5 +125,5 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "We returned more than a section and a citation"
         )
     }
-  }
+  }*/
 }

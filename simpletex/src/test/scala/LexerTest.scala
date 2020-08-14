@@ -30,6 +30,16 @@ class LexerSectionTests extends AnyFunSuite {
       case Right(_)                                          => assert(false, "We returned more than one references")
     }
   }
+  test(
+    "A individual citation on it's own line should produce a CITATION object"
+  ) {
+    SimpleTexLexer("@cite{some citation material} \n") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the citation out of the string")
+      case Right(List(CITATION("some citation material"))) => assert(true)
+      case Right(_)                                        => assert(false, "We returned more than one citations")
+    }
+  }
 }
 
 class LexerBoldTests extends AnyFunSuite {

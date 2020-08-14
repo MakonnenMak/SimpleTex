@@ -57,7 +57,9 @@ case object SimpleTexLexer extends RegexParsers {
   }
 
   def citation: Parser[CITATION] = {
-    "@cite\\{([^}]+)\\}*".r ^^ { citation => CITATION(citation) }
+    "@cite\\{([^}]+)\\}*".r ^^ { citation =>
+      CITATION(citation.slice(6, citation.length - 1))
+    }
   }
 
   def reference: Parser[REFERENCE] = {
