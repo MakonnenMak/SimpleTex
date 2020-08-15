@@ -27,9 +27,40 @@ class ReferenceLexer extends AnyFunSuite {
   test("should parse an individual reference on its own line") {
     SimpleTexLexer("@ref{some reference material} \n") match {
       case Left(value) =>
-        assert(false, "Didn't parse the reference out of the string")
+        fail("Didn't parse the reference out of the string")
       case Right(List(REFERENCE("some reference material"))) => assert(true)
-      case Right(_)                                          => assert(false, "We returned more than one references")
+      case Right(_)                                          => fail("We returned more than one references")
+    }
+  }
+
+}
+
+class BoldItalics extends AnyFunSuite {
+  test("should parse text surrounded by *** as bold and italics") {
+    SimpleTexLexer("***some content***") match {
+      case Left(value)                              => fail("Didn't parse the string at all")
+      case Right(List(BOLDITALICS("some content"))) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
+    }
+  }
+  test("should not parse text that has only one *** into bold and italics") {
+    SimpleTexLexer("***some content") match {
+      case Left(value) => fail("Didn't parse the string at all")
+      case Right(List(BOLDITALICS("some content"))) =>
+        fail("We actually parsed this into a bolditalics when we shouldn't")
+      case Right(_) =>
+        assert(true)
+    }
+  }
+  test(
+    "should parse text surrounded by *** as bold and italics irregardless of spacing"
+  ) {
+    SimpleTexLexer("*** some content ***") match {
+      case Left(value)                                => fail("Didn't parse the string at all")
+      case Right(List(BOLDITALICS(" some content "))) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
     }
   }
 
