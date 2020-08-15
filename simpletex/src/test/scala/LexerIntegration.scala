@@ -2,8 +2,8 @@ package simpletex.lexer
 import org.scalatest.funsuite.AnyFunSuite
 import simpletex.lexer._
 
-// TODO use the word integration in the test names
-class LexerIntegrationHeaderTests extends AnyFunSuite {
+// TODO use the word I in the test names
+class ILexerHeader extends AnyFunSuite {
   test("A section with a subsection directly below it") {
     SimpleTexLexer("# section name \n ## subsection name \n") match {
       case Left(value) =>
@@ -12,7 +12,7 @@ class LexerIntegrationHeaderTests extends AnyFunSuite {
           "Didn't parse the section and subsection out of the string"
         )
       case Right(
-            List(SECTION("section name \n"), SUBSECTION("subsection name \n"))
+          List(SECTION("section name \n"), SUBSECTION("subsection name \n"))
           ) =>
         assert(true)
       case Right(_) =>
@@ -24,8 +24,7 @@ class LexerIntegrationHeaderTests extends AnyFunSuite {
   }
 }
 
-// TODO Some short naming convention for this..
-class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
+class ILexerSectionFormatting extends AnyFunSuite {
   test("A section with a bold piece of text below it") {
     SimpleTexLexer("# section name \n **Hello World!**") match {
       case Left(value) =>
@@ -34,7 +33,7 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "Didn't parse the section and bold text out of the string"
         )
       case Right(
-            List(SECTION("section name \n"), BOLD("Hello World!"))
+          List(SECTION("section name \n"), BOLD("Hello World!"))
           ) =>
         assert(true)
       case Right(_) =>
@@ -53,7 +52,7 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "Didn't parse the section and italisized text out of the string"
         )
       case Right(
-            List(SECTION("section name \n"), ITALICS("Fancy italic text"))
+          List(SECTION("section name \n"), ITALICS("Fancy italic text"))
           ) =>
         assert(true)
       case Right(_) =>
@@ -72,10 +71,10 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "Didn't parse the section and bold+italisized text out of the string"
         )
       case Right(
-            List(
-              SECTION("section name \n"),
-              BOLDITALICS("Bold and fancy italics")
-            )
+          List(
+            SECTION("section name \n"),
+            BOLDITALICS("Bold and fancy italics")
+          )
           ) =>
         assert(true)
       case Right(_) =>
@@ -94,7 +93,7 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "Didn't parse the section and reference out of the string"
         )
       case Right(
-            List(SECTION("section name \n"), REFERENCE("some label"))
+          List(SECTION("section name \n"), REFERENCE("some label"))
           ) =>
         assert(true)
       case Right(_) =>
@@ -115,7 +114,7 @@ class LexerIntegrationSectionTextFormatTests extends AnyFunSuite {
           "Didn't parse the section and citation out of the string"
         )
       case Right(
-            List(SECTION("section name \n"), CITATION("some citation"))
+          List(SECTION("section name \n"), CITATION("some citation"))
           ) =>
         assert(true)
       case Right(_) =>
