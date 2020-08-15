@@ -183,14 +183,24 @@ class EquationLexer extends AnyFunSuite {
 class LayoutLexer extends AnyFunSuite {
   test("should parse a layout on a line correctly") {
     SimpleTexLexer("%% layout1 \n") match {
-      case Left(value) =>
-        assert(false, "Didn't parse layout out of string")
-      case Right(List(value)) => assert(value.equals(LAYOUT("layout1 \n")))
-      case Right(_)           => assert(false, "We returned more than one layout")
+      case Left(value)                       => assert(false, "Didn't parse layout out of string")
+      case Right(List(LAYOUT("layout1 \n"))) => assert(true)
+      case Right(_)                          => assert(false, "We returned more than one layout")
     }
   }
 }
 
+class LabelLexer extends AnyFunSuite {
+  test("should parse any content in a @label tag") {
+    SimpleTexLexer("@label{some reference}\n") match {
+      case Left(value)                          => assert(false, "Didn't parse label out of string")
+      case Right(List(LABEL("some reference"))) => assert(true)
+      case Right(_)                             => assert(false, "We returned more than one layout")
+    }
+
+  }
+
+}
 class ContentLexer extends AnyFunSuite {
 
   test("should match any content if not matched by other parsers") {

@@ -23,6 +23,7 @@ case class IMAGE(label: String, caption: String, path: String)
 case class Text(content: String) extends SimpleTexToken
 case class EQUATION(equation: String) extends SimpleTexToken
 case class CONTENT(content: String) extends SimpleTexToken
+case class LABEL(name: String) extends SimpleTexToken
 
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
@@ -85,15 +86,20 @@ case object SimpleTexLexer extends RegexParsers {
 
   }
 
+  def label: Parser[LABEL] = {
+    "@label\\{([^}]+)\\}*".r ^^ { label =>
+      LABEL(label.slice(7, label.length - 1))
+    }
+  }
+
   def content: Parser[CONTENT] = {
     ".+".r ^^ { content => CONTENT(content) }
-
   }
 
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalics | bold | italics | citation | reference | section | subsection | image | equation | layout | content
+        boldItalics | bold | italics | citation | reference | section | subsection | image | equation | layout | label | content
       )
     )
   }
