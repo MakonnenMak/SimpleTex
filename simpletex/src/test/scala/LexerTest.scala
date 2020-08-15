@@ -3,8 +3,8 @@ import org.scalatest.funsuite.AnyFunSuite
 
 import simpletex.lexer._;
 
-class LexerSectionTests extends AnyFunSuite {
-  test("A section on a single line should produce a SECTION object") {
+class SectionLexer extends AnyFunSuite {
+  test("should parse a section on a single line") {
     SimpleTexLexer("# section name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the section out of the string")
@@ -12,7 +12,7 @@ class LexerSectionTests extends AnyFunSuite {
       case Right(_)                                => assert(false, "We returned more than one section")
     }
   }
-  test("A sub-section on a single line should produce a SUBSECTION object") {
+  test("should parse a sub-section on a single line") {
     SimpleTexLexer("## subsection name \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the subsection out of the string")
@@ -20,9 +20,11 @@ class LexerSectionTests extends AnyFunSuite {
       case Right(_)                                      => assert(false, "We returned more than one subsection")
     }
   }
-  test(
-    "A individual reference on it's own line should produce a REFERENCE object"
-  ) {
+
+}
+
+class ReferenceLexer extends AnyFunSuite {
+  test("should parse an individual reference on its own line") {
     SimpleTexLexer("@ref{some reference material} \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the reference out of the string")
@@ -30,9 +32,11 @@ class LexerSectionTests extends AnyFunSuite {
       case Right(_)                                          => assert(false, "We returned more than one references")
     }
   }
-  test(
-    "A individual citation on it's own line should produce a CITATION object"
-  ) {
+
+}
+
+class CitationLexer extends AnyFunSuite {
+  test("should parse an individual citation on it's own line") {
     SimpleTexLexer("@cite{some citation material} \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the citation out of the string")
