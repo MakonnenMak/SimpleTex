@@ -42,8 +42,8 @@ class LexerSectionTests extends AnyFunSuite {
   }
 }
 
-class LexerBoldTests extends AnyFunSuite {
-  test("A text surrounded by two * should be bold") {
+class BoldLexer extends AnyFunSuite {
+  test("should parse all text surrounded by a pair of ** as bold") {
     SimpleTexLexer("**some bold text**") match {
       case Left(value)                         => fail("Didn't parse the bold text")
       case Right(List(BOLD("some bold text"))) => assert(true)
@@ -51,7 +51,7 @@ class LexerBoldTests extends AnyFunSuite {
     }
   }
 
-  test("A text with only one pair of * shouldn't parse as a bold") {
+  test("should not parse text surrounded by a single ** as bold ") {
     SimpleTexLexer("**some bold text") match {
       case Left(value) => fail("Lexer couldn't understand this")
       case Right(List(BOLD("some bold te"))) =>
@@ -62,7 +62,7 @@ class LexerBoldTests extends AnyFunSuite {
     }
   }
 
-  test("Empty space surrounded by ** should parse as a bold") {
+  test("should parse empty space surrounded by ** as bold") {
     SimpleTexLexer("** **") match {
       case Left(value)            => fail("Lexer couldn't understand this")
       case Right(List(BOLD(" "))) => assert(true)
@@ -70,7 +70,9 @@ class LexerBoldTests extends AnyFunSuite {
     }
   }
 
-  test("Space doesn't matter as long as we have at least one non-empty char") {
+  test(
+    "should correctly parse any content surrounded by ** irregardless of spacing"
+  ) {
     SimpleTexLexer("** some space surrounded **") match {
       case Left(value)                                  => fail("Lexer couldn't understand this")
       case Right(List(BOLD(" some space surrounded "))) => assert(true)
@@ -80,8 +82,8 @@ class LexerBoldTests extends AnyFunSuite {
 
 }
 
-class LexerItalicsTests extends AnyFunSuite {
-  test("Text surrounded by one * should be italics") {
+class ItalicsLexer extends AnyFunSuite {
+  test("should parse all text surrounded by a pair of * as bold") {
     SimpleTexLexer("*some text*") match {
       case Left(value)                       => fail("Lexer couldn't understand this")
       case Right(List(ITALICS("some text"))) => assert(true)
@@ -89,7 +91,7 @@ class LexerItalicsTests extends AnyFunSuite {
     }
   }
 
-  test("Text surrounded with a single * shouldn't be italics") {
+  test("should not parse text surrounded by a single * as italics ") {
     SimpleTexLexer("*some text here") match {
       case Left(value) => fail("Lexer couldn't understand this")
       case Right(List(ITALICS(" "))) =>
@@ -98,9 +100,7 @@ class LexerItalicsTests extends AnyFunSuite {
     }
   }
 
-  test(
-    "Empty space doesn't matter as long as we have at least one non-empty space"
-  ) {
+  test("should parse empty space surrounded by * as italics") {
     SimpleTexLexer("* some text here *") match {
       case Left(value)                              => fail("Lexer couldn't understand this")
       case Right(List(ITALICS(" some text here "))) => assert(true)
@@ -108,7 +108,9 @@ class LexerItalicsTests extends AnyFunSuite {
     }
   }
 
-  test("Empty space surrounded by * should parse as a italics") {
+  test(
+    "should correctly parse any content surrounded by * as italics irregardless of spacing"
+  ) {
     SimpleTexLexer("* *") match {
       case Left(value)               => fail("Lexer couldn't understand this")
       case Right(List(ITALICS(" "))) => assert(true)
@@ -118,9 +120,9 @@ class LexerItalicsTests extends AnyFunSuite {
 
 }
 
-class LexerImageTests extends AnyFunSuite {
+class ImageLexer extends AnyFunSuite {
 
-  test("A simple image should have caption, label, and path") {
+  test("should correctly parse a simple image with a caption, label, and path") {
     SimpleTexLexer("![My Caption][My Label](/this/is/a/path)") match {
       case Left(value) =>
         assert(false, "Didn't parse the image out of the string")
@@ -131,9 +133,9 @@ class LexerImageTests extends AnyFunSuite {
   }
 }
 
-class LexerEquationTests extends AnyFunSuite {
+class EquationLexer extends AnyFunSuite {
 
-  test("A simple equation is content surrounded by $ signs") {
+  test("should parse a simple equation with content surrounded by $ signs") {
     SimpleTexLexer("$1+1=2$") match {
       case Left(value) =>
         assert(false, "Didn't parse the equation out of the string")
@@ -143,8 +145,8 @@ class LexerEquationTests extends AnyFunSuite {
   }
 }
 
-class LexerLayoutTest extends AnyFunSuite {
-  test("A simple layout definition") {
+class LayoutLexer extends AnyFunSuite {
+  test("should parse a layout on a line correctly") {
     SimpleTexLexer("%% layout1 \n") match {
       case Left(value) =>
         assert(false, "Didn't parse layout out of string")
@@ -154,9 +156,9 @@ class LexerLayoutTest extends AnyFunSuite {
   }
 }
 
-class LexerContentTests extends AnyFunSuite {
+class ContentLexer extends AnyFunSuite {
 
-  test("Anything should match the content if not matched by others") {
+  test("should match any content if not matched by other parsers") {
     SimpleTexLexer("hello world") match {
       case Left(value) =>
         assert(false, "Didn't parse the content out of the string")
@@ -165,7 +167,7 @@ class LexerContentTests extends AnyFunSuite {
     }
   }
 
-  test("An item shouldn't match content if a section can match it") {
+  test("should not match a character if a section can match it") {
     SimpleTexLexer("# hello world \n") match {
       case Left(value) =>
         assert(false, "Didn't parse the content out of the string")
@@ -174,12 +176,14 @@ class LexerContentTests extends AnyFunSuite {
     }
   }
 
-  test("A section followed by some content should form a list") {
+  test(
+    "should match content following a section that is not matched by anything else"
+  ) {
     SimpleTexLexer("# hello section \n some content here") match {
       case Left(value) =>
         assert(false, "Didn't parse the content and section out of the string")
       case Right(
-            List(SECTION("hello section \n"), CONTENT("some content here"))
+          List(SECTION("hello section \n"), CONTENT("some content here"))
           ) =>
         assert(true)
       case Right(a) =>
