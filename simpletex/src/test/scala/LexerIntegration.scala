@@ -24,6 +24,34 @@ class ILexerHeader extends AnyFunSuite {
   }
 }
 
+class ILexerSectionSubContent extends AnyFunSuite {
+  test("throwaway") {
+    SimpleTexLexer("hi hi **bold stuff** hi2 hi3") match {
+      case Left(value) =>
+        assert(
+          false,
+          s"Didn't parse the content and bold text out of the string: $value"
+        )
+      case Right(
+          List(
+            CONTENT("hi"),
+            CONTENT("hi"),
+            BOLD("bold stuff"),
+            CONTENT("hi2"),
+            CONTENT("hi3")
+          )
+          ) =>
+        assert(true)
+      case Right(a) =>
+        assert(
+          false,
+          s"We returned more than a section and a bold piece of text: $a"
+        )
+    }
+
+  }
+
+}
 class ILexerSectionFormatting extends AnyFunSuite {
   test("A section with a bold piece of text below it") {
     SimpleTexLexer("# section name \n **Hello World!**") match {

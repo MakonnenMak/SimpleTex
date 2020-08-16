@@ -20,7 +20,6 @@ case class CITATION(source: String) extends SimpleTexToken
 case class REFERENCE(label: String) extends SimpleTexToken
 case class IMAGE(label: String, caption: String, path: String)
     extends SimpleTexToken
-case class Text(content: String) extends SimpleTexToken
 case class EQUATION(equation: String) extends SimpleTexToken
 case class CONTENT(content: String) extends SimpleTexToken
 case class LABEL(name: String) extends SimpleTexToken
@@ -93,7 +92,7 @@ case object SimpleTexLexer extends RegexParsers {
   }
 
   def content: Parser[CONTENT] = {
-    ".+".r ^^ { content => CONTENT(content) }
+    "\\S+".r ^^ { content => CONTENT(content) }
   }
 
   def tokens: Parser[List[SimpleTexToken]] = {
