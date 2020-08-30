@@ -1,7 +1,6 @@
 /**
   * This file contains the parser
   */
-
 package simpletex.parser
 import scala.util.parsing.combinator.Parsers
 import scala.util.parsing.input.{NoPosition, Position, Reader}
@@ -18,5 +17,12 @@ object SimpleTexParser extends Parsers {
       new SimpleTexTokenReader(tokens.tail)
   }
 
-}
+  def apply(tokens: Seq[SimpleTexToken]): Either[String, SimpleTexAST] = {
+    val reader = new SimpleTexTokenReader(tokens)
+    document(reader) match {
+      case NoSuccess(msg, next)  => Left(msg)
+      case Success(result, next) => Right(result)
+    }
+  }
 
+}
