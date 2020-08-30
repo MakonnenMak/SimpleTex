@@ -25,4 +25,29 @@ object SimpleTexParser extends Parsers {
     }
   }
 
+  def document: Parser[SimpleTexAST] = {
+    phrase(block)
+  }
+
+  def block: Parser[SimpleTexAST] = {
+    rep1(statement) ^^ { case stmtList => stmtList }
+  }
+  def statement: Parser[SimpleTexAST] = {
+    val mainSection = section ~ opt(subsection) ~ opt(content)
+    val sectionLayout = layout ~ section ^^ {
+      case LAYOUT(layout) ~ section => LayoutSection()
+    }
+    section | subsection | layout
+  }
+
+  private def section: Parser[SECTION] = {
+    accept("section", { case s @ SECTION(name) => s })
+  }
+  private def subsection: Parser[SUBSECTION] = {
+    accept("subsection", { case s @ SUBSECTION(name) => s })
+  }
+  private def layout: Parser[LAYOUT] = {
+    accept("layout", { case l @ LAYOUT(layout) => l })
+  }
+
 }
