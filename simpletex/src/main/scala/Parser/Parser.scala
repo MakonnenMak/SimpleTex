@@ -30,12 +30,18 @@ object SimpleTexParser extends Parsers {
   }
 
   def block: Parser[SimpleTexAST] = {
-    rep1(statement) ^^ { case stmtList => stmtList }
+    rep1(sections) ^^ { case stmtList => stmtList } //TODO reduce/fold to something that is an SimpletexAST type
   }
-  def statement: Parser[SimpleTexAST] = {
-    val mainSection = section ~ opt(subsection) ~ opt(content)
+
+  def sections: Parser[SimpleTexAST] = {
+    val mainSection =
+      section ~ rep(subsection) ~ rep(content) ^^ { //TODO subsection should be a parser not lexer subsection
+        case SECTION(title) ~ subsections ~ contents =>
+          Section(title, subsections, contents)
+      }
     val sectionLayout = layout ~ section ^^ {
-      case LAYOUT(layout) ~ section => LayoutSection()
+      case LAYOUT(layout) ~ mainSection =>
+        LayoutSection(layout, mainSection)
     }
     section | subsection | layout
   }
