@@ -8,7 +8,7 @@ case class Section(
     content: Seq[Content]
 ) extends SimpleTexAST
 case class Subsection(name: String, content: Seq[Content]) extends SimpleTexAST
-case class LayoutSection(name: String, section: Section)
+case class LayoutSection(name: String, section: Section) extends SimpleTexAST
 
 sealed trait Content
 case class PlainText(text: Seq[String]) extends Content
