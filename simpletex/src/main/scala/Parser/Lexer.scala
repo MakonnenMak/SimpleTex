@@ -53,7 +53,9 @@ case object SimpleTexLexer extends RegexParsers {
   def boldItalicsR: Parser[BOLDITALICSR] = raw"***/".r ^^ { _ =>
     BOLDITALICSR()
   }
-  def boldItalicsL: Parser[BOLDITALICSL] = raw"/***".r ^^ { _ =>
+
+  // TODO : raw requires escapting just not doulbe \\
+  def boldItalicsL: Parser[BOLDITALICSL] = raw"/\*\*\*".r ^^ { _ =>
     BOLDITALICSL()
   }
 
@@ -77,9 +79,15 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        citation | reference | section | subsection | boldL | boldR | italicsL | italicsR | boldItalicsL | boldItalicsR | equationL | equationR | layout | label | content | newline | braceL | braceR | parenL | parenR | squareL | squareR | exclam
+        boldItalicsL
       )
     )
+
+    //phrase(
+    //rep1(
+    //citation | reference | section | subsection | boldL | boldR | italicsL | italicsR | boldItalicsL | boldItalicsR | equationL | equationR | layout | label | content | newline | braceL | braceR | parenL | parenR | squareL | squareR | exclam
+    //)
+    //)
   }
   def apply(code: String): Either[SimpleTexLexerError, List[SimpleTexToken]] = {
     parse(tokens, code) match {
