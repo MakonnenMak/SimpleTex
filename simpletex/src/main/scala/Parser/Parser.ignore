@@ -44,18 +44,32 @@ object SimpleTexParser extends Parsers {
         LayoutSection(layout, mainSection)
     }
 
-    val content =???
+    val content =
+      rep(bold) | rep(italics) | rep(bolditalics) | rep(citation) | rep(
+        reference
+      ) | rep(image) | rep(text) ^^ {
+
+        case s @ Seq(CONTENT(c)) =>
+          PlainText(
+            s.map(_.content)
+          ) // TODO this is expecting the last item in the ors
+        case BOLD(c)        => Bold(c)
+        case ITALICS(c)     => Italics(c)
+        case BOLDITALICS(c) => BoldItalics(c)
+      }
 
     val mainSubsection = subsection ~ rep(content) ^^ {
       case SUBSECTION(title) ~ contents => Subsection(title, contents)
     }
 
-    mainSubsection
+    mainSection | mainSubsection // TODO or all of them here
   }
 
-  private def text: Parser[CONTENT] = { // TODO should consider renaming content and plaintext ==> same idea but different names
+  private def text
+      : Parser[CONTENT] = { // TODO should consider renaming content and plaintext ==> same idea but different names
     accept("plaintext", { case s @ CONTENT(name) => s })
   }
+  // TODO this should be refactored by re writing the lexer
   private def bold: Parser[BOLD] = {
     accept("bold", { case s @ BOLD(name) => s })
   }
