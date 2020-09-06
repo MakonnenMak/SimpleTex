@@ -42,69 +42,42 @@ trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
 
 case object SimpleTexLexer extends RegexParsers {
-  def section: Parser[SECTION] = {
-    "^# ".r ^^ { _ => SECTION() }
+  def section: Parser[SECTION] = "^# ".r ^^ { _ => SECTION() }
+  def subsection: Parser[SUBSECTION] = "^## ".r ^^ { _ => SUBSECTION() }
+  def layout: Parser[LAYOUT] = "^%% ".r ^^ { _ => LAYOUT() }
+
+  def italicsR: Parser[ITALICSR] = raw"*/".r ^^ { _ => ITALICSR() }
+  def italicsL: Parser[ITALICSL] = raw"/*".r ^^ { _ => ITALICSL() }
+  def boldR: Parser[BOLDR] = raw"**/".r ^^ { _ => BOLDR() }
+  def boldL: Parser[BOLDL] = raw"/**".r ^^ { _ => BOLDL() }
+  def boldItalicsR: Parser[BOLDITALICSR] = raw"***/".r ^^ { _ =>
+    BOLDITALICSR()
+  }
+  def boldItalicsL: Parser[BOLDITALICSL] = raw"/***".r ^^ { _ =>
+    BOLDITALICSL()
   }
 
-  def newline: Parser[NEWLINE] = {
-    raw"\n".r ^^ { _ => NEWLINE() }
-  }
+  def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
+  def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
 
-  def subsection: Parser[SUBSECTION] = {
-    "^## ".r ^^ { _ => SUBSECTION() }
-  }
+  def equationR: Parser[EQUATIONR] = """$/""".r ^^ { _ => EQUATIONR() }
+  def equationL: Parser[EQUATIONL] = """\$""".r ^^ { _ => EQUATIONL() }
+  def label: Parser[LABEL] = "@label".r ^^ { _ => LABEL() }
+  def content: Parser[TEXT] = "\\S+".r ^^ { content => TEXT(content) }
+  def newline: Parser[NEWLINE] = raw"\n".r ^^ { _ => NEWLINE() }
 
-  def layout: Parser[LAYOUT] = {
-    "^%% ".r ^^ { _ => LAYOUT() }
-  }
-
-  def italics: Parser[ITALICS] = {
-    raw"/*(.+)*".r ^^ { text => ITALICS() }
-  }
-
-  def bold: Parser[BOLD] = {
-    "\\*\\*(.+)\\*\\*".r ^^ { text => BOLD() }
-  }
-
-  def boldItalics: Parser[BOLDITALICS] = {
-    "\\*\\*\\*(.+)\\*\\*\\*".r ^^ { text => BOLDITALICS() }
-  }
-
-  def citation: Parser[CITATION] = {
-    "@cite\\{([^}]+)\\}*".r ^^ { citation => CITATION() }
-  }
-
-  def reference: Parser[REFERENCE] = {
-    "@ref\\{([^}]+)\\}".r ^^ { label => REFERENCE() }
-  }
-
-  def image: Parser[IMAGE] = {
-    val matcher = """!\[(.*)\]\[(.*)\]\((.*)\)""".r
-    "!\\[(.+)\\]\\[(.+)\\]\\((.+)\\)".r ^^ { content =>
-      content match {
-        case matcher(caption, label, path) => IMAGE()
-      }
-    }
-
-  }
-
-  def equation: Parser[EQUATION] = {
-    "\\$.+\\$".r ^^ { equation => EQUATION() }
-
-  }
-
-  def label: Parser[LABEL] = {
-    "@label\\{([^}]+)\\}*".r ^^ { label => LABEL() }
-  }
-
-  def content: Parser[TEXT] = {
-    "\\S+".r ^^ { content => TEXT(content) }
-  }
+  def braceR: Parser[BRACER] = raw"}".r ^^ { _ => BRACER() }
+  def braceL: Parser[BRACEL] = raw"{".r ^^ { _ => BRACEL() }
+  def parenL: Parser[PARENL] = raw"(".r ^^ { _ => PARENL() }
+  def parenR: Parser[PARENR] = raw")".r ^^ { _ => PARENR() }
+  def squareL: Parser[SQUAREL] = raw"[".r ^^ { _ => SQUAREL() }
+  def squareR: Parser[SQUARER] = raw"]".r ^^ { _ => SQUARER() }
+  def exclam: Parser[EXCLAM] = raw"!".r ^^ { _ => EXCLAM() }
 
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalics | bold | italics | citation | reference | section | subsection | image | equation | layout | label | content
+        citation | reference | section | subsection | equationL | equationR | layout | label | content
       )
     )
   }
