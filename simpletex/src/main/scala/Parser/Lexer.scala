@@ -10,89 +10,95 @@ import scala.util.parsing.combinator._
 
 sealed trait SimpleTexToken
 
-case class SECTION(title: String) extends SimpleTexToken
-case class LAYOUT(layout: String) extends SimpleTexToken
-case class SUBSECTION(title: String) extends SimpleTexToken
-case class BOLD(text: String) extends SimpleTexToken
-case class ITALICS(text: String) extends SimpleTexToken
-case class BOLDITALICS(text: String) extends SimpleTexToken
-case class CITATION(source: String) extends SimpleTexToken
-case class REFERENCE(label: String) extends SimpleTexToken
-case class IMAGE(label: String, caption: String, path: String)
-    extends SimpleTexToken
-case class EQUATION(equation: String) extends SimpleTexToken
-case class CONTENT(content: String) extends SimpleTexToken
-case class LABEL(name: String) extends SimpleTexToken
+case class SECTION() extends SimpleTexToken
+case class LAYOUT() extends SimpleTexToken
+case class SUBSECTION() extends SimpleTexToken
+
+case class BOLDL() extends SimpleTexToken
+case class BOLDR() extends SimpleTexToken
+case class ITALICSL() extends SimpleTexToken
+case class ITALICSR() extends SimpleTexToken
+case class BOLDITALICSL() extends SimpleTexToken
+case class BOLDITALICSR() extends SimpleTexToken
+
+case class CITATION() extends SimpleTexToken
+case class REFERENCE() extends SimpleTexToken
+case class EQUATIONL() extends SimpleTexToken
+case class EQUATIONR() extends SimpleTexToken
+
+case class TEXT(value: String) extends SimpleTexToken
+case class LABEL() extends SimpleTexToken
+
+case class NEWLINE() extends SimpleTexToken
+case class BRACEL() extends SimpleTexToken
+case class BRACER() extends SimpleTexToken
+case class PARENL() extends SimpleTexToken
+case class PARENR() extends SimpleTexToken
+case class SQUAREL() extends SimpleTexToken
+case class SQUARER() extends SimpleTexToken
+case class EXCLAM() extends SimpleTexToken
 
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
 
 case object SimpleTexLexer extends RegexParsers {
   def section: Parser[SECTION] = {
-    "^# (.*)\n".r ^^ { title => SECTION(title.slice(2, title.length)) }
+    "^# ".r ^^ { _ => SECTION() }
   }
 
-  // TODO parse out the ## etc for all
-  // above method is ugly but works
+  def newline: Parser[NEWLINE] = {
+    raw"\n".r ^^ { _ => NEWLINE() }
+  }
+
   def subsection: Parser[SUBSECTION] = {
-    "^## (.+)\n".r ^^ { title => SUBSECTION(title.slice(3, title.length)) }
+    "^## ".r ^^ { _ => SUBSECTION() }
   }
 
   def layout: Parser[LAYOUT] = {
-    "^%% (.+)\n".r ^^ { layout => LAYOUT(layout.slice(3, layout.length)) }
+    "^%% ".r ^^ { _ => LAYOUT() }
   }
 
   def italics: Parser[ITALICS] = {
-    "\\*(.+)\\*".r ^^ { text => ITALICS(text.slice(1, text.length - 1)) }
+    raw"/*(.+)*".r ^^ { text => ITALICS() }
   }
 
   def bold: Parser[BOLD] = {
-    "\\*\\*(.+)\\*\\*".r ^^ { text => BOLD(text.slice(2, text.length - 2)) }
+    "\\*\\*(.+)\\*\\*".r ^^ { text => BOLD() }
   }
 
   def boldItalics: Parser[BOLDITALICS] = {
-    "\\*\\*\\*(.+)\\*\\*\\*".r ^^ { text =>
-      BOLDITALICS(text.slice(3, text.length - 3))
-    }
+    "\\*\\*\\*(.+)\\*\\*\\*".r ^^ { text => BOLDITALICS() }
   }
 
   def citation: Parser[CITATION] = {
-    "@cite\\{([^}]+)\\}*".r ^^ { citation =>
-      CITATION(citation.slice(6, citation.length - 1))
-    }
+    "@cite\\{([^}]+)\\}*".r ^^ { citation => CITATION() }
   }
 
   def reference: Parser[REFERENCE] = {
-    "@ref\\{([^}]+)\\}".r ^^ { label =>
-      REFERENCE(label.slice(5, label.length - 1))
-    }
+    "@ref\\{([^}]+)\\}".r ^^ { label => REFERENCE() }
   }
 
   def image: Parser[IMAGE] = {
     val matcher = """!\[(.*)\]\[(.*)\]\((.*)\)""".r
     "!\\[(.+)\\]\\[(.+)\\]\\((.+)\\)".r ^^ { content =>
       content match {
-        case matcher(caption, label, path) => IMAGE(caption, label, path)
+        case matcher(caption, label, path) => IMAGE()
       }
     }
 
   }
 
   def equation: Parser[EQUATION] = {
-    "\\$.+\\$".r ^^ { equation =>
-      EQUATION(equation.slice(1, equation.length - 1))
-    }
+    "\\$.+\\$".r ^^ { equation => EQUATION() }
 
   }
 
   def label: Parser[LABEL] = {
-    "@label\\{([^}]+)\\}*".r ^^ { label =>
-      LABEL(label.slice(7, label.length - 1))
-    }
+    "@label\\{([^}]+)\\}*".r ^^ { label => LABEL() }
   }
 
-  def content: Parser[CONTENT] = {
-    "\\S+".r ^^ { content => CONTENT(content) }
+  def content: Parser[TEXT] = {
+    "\\S+".r ^^ { content => TEXT(content) }
   }
 
   def tokens: Parser[List[SimpleTexToken]] = {
