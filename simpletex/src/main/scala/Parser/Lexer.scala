@@ -48,8 +48,8 @@ case object SimpleTexLexer extends RegexParsers {
 
   def italicsL: Parser[ITALICSL] = raw"/\*".r ^^ { _ => ITALICSL() }
   def italicsR: Parser[ITALICSR] = raw"\*/".r ^^ { _ => ITALICSR() }
-  def boldR: Parser[BOLDR] = raw"**/".r ^^ { _ => BOLDR() }
-  def boldL: Parser[BOLDL] = raw"/**".r ^^ { _ => BOLDL() }
+  def boldL: Parser[BOLDL] = raw"/\*\*".r ^^ { _ => BOLDL() }
+  def boldR: Parser[BOLDR] = raw"\*\*/".r ^^ { _ => BOLDR() }
   def boldItalicsR: Parser[BOLDITALICSR] =
     raw"\*\*\*/".r ^^ { _ =>
       BOLDITALICSR()
@@ -81,7 +81,7 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR
       )
     )
 
