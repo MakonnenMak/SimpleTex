@@ -24,6 +24,19 @@ class BoldItalics extends AnyFunSuite {
   }
 }
 
+class Italics extends AnyFunSuite{
+  test("should parse left symbol for italics"){
+    SimpleTexLexer("""/*""") match{
+      case Left(value) =>
+        fail("Didn't parse the left symbol for italics at all")
+      case Right(List(ITALICSL())) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
+
+    }
+  }
+}
+
 /*
 class SectionLexer extends AnyFunSuite {
   test("should parse a section on a single line") {
