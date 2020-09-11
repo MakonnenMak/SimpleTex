@@ -4,16 +4,26 @@ import org.scalatest.funsuite.AnyFunSuite
 import simpletex.lexer._;
 
 class BoldItalics extends AnyFunSuite {
-  test("should parse text surrounded by *** as bold and italics") {
+  test("should parse left symbol for bold italics") {
     SimpleTexLexer("""/***""") match {
-      case Left(value)                 => fail("Didn't parse the string at all")
+      case Left(value) =>
+        fail("Didn't parse the left symbol for bold italics at all")
       case Right(List(BOLDITALICSL())) => assert(true)
       case Right(_) =>
         fail("Parsed but returned a different parser result")
     }
   }
-
+  test("should parse right symbol for bold italics") {
+    SimpleTexLexer("""***/""") match {
+      case Left(value) =>
+        fail("Didn't parse the right symbol for bold italics at all")
+      case Right(List(BOLDITALICSR())) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
+    }
+  }
 }
+
 /*
 class SectionLexer extends AnyFunSuite {
   test("should parse a section on a single line") {
