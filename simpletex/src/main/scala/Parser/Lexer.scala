@@ -46,21 +46,20 @@ case object SimpleTexLexer extends RegexParsers {
   def subsection: Parser[SUBSECTION] = "^## ".r ^^ { _ => SUBSECTION() }
   def layout: Parser[LAYOUT] = "^%% ".r ^^ { _ => LAYOUT() }
 
-  def italicsL: Parser[ITALICSL] = raw"/\*".r ^^ { _ => ITALICSL() }
-  def italicsR: Parser[ITALICSR] = raw"\*/".r ^^ { _ => ITALICSR() }
-  def boldL: Parser[BOLDL] = raw"/\*\*".r ^^ { _ => BOLDL() }
-  def boldR: Parser[BOLDR] = raw"\*\*/".r ^^ { _ => BOLDR() }
-  def boldItalicsR: Parser[BOLDITALICSR] =
-    raw"\*\*\*/".r ^^ { _ =>
-      BOLDITALICSR()
-    }
-
+  def italicsL: Parser[ITALICSL] = raw"/\* ".r ^^ { _ => ITALICSL() }
+  def italicsR: Parser[ITALICSR] = raw" \+/".r ^^ { _ => ITALICSR() }
+  //  /** asdasd **/
+  def boldL: Parser[BOLDL] = raw"/\*\* ".r ^^ { _ => BOLDL() }
+  def boldR: Parser[BOLDR] = raw" \*\*/".r ^^ { _ => BOLDR() }
   // TODO : raw requires escapting just not doulbe \\
   def boldItalicsL: Parser[BOLDITALICSL] =
-    raw"/\*\*\*".r ^^ { _ =>
+    raw"/\*\*\* ".r ^^ { _ =>
       BOLDITALICSL()
     }
-
+  def boldItalicsR: Parser[BOLDITALICSR] =
+    raw" \*\*\*/".r ^^ { _ =>
+      BOLDITALICSR()
+    }
   def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
   def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
 

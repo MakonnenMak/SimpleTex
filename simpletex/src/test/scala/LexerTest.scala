@@ -5,7 +5,7 @@ import simpletex.lexer._;
 
 class BoldItalics extends AnyFunSuite {
   test("should parse left symbol for bold italics") {
-    SimpleTexLexer("""/***""") match {
+    SimpleTexLexer("""/*** """) match {
       case Left(value) =>
         fail("Didn't parse the left symbol for bold italics at all")
       case Right(List(BOLDITALICSL())) => assert(true)
@@ -14,9 +14,9 @@ class BoldItalics extends AnyFunSuite {
     }
   }
   test("should parse right symbol for bold italics") {
-    SimpleTexLexer("""***/""") match {
+    SimpleTexLexer(""" ***/""") match {
       case Left(value) =>
-        fail("Didn't parse the right symbol for bold italics at all")
+        fail(s"${value} Didn't parse the right symbol for bold italics at all")
       case Right(List(BOLDITALICSR())) => assert(true)
       case Right(_) =>
         fail("Parsed but returned a different parser result")
@@ -26,7 +26,7 @@ class BoldItalics extends AnyFunSuite {
 
 class Italics extends AnyFunSuite {
   test("should parse left symbol for italics") {
-    SimpleTexLexer("""/*""") match {
+    SimpleTexLexer("""/* """) match {
       case Left(value) =>
         fail("Didn't parse the left symbol for italics at all")
       case Right(List(ITALICSL())) => assert(true)
@@ -36,10 +36,32 @@ class Italics extends AnyFunSuite {
     }
   }
   test("should parse right symbol for italics") {
-    SimpleTexLexer("""*/""") match {
+    SimpleTexLexer(""" */""") match {
       case Left(value) =>
-        fail("Didn't parse the right symbol for italics at all")
+        fail(s"${value} Didn't parse the right symbol for italics at all")
       case Right(List(ITALICSR())) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
+
+    }
+  }
+}
+class Bold extends AnyFunSuite {
+  test("should parse left symbol for bold") {
+    SimpleTexLexer("""/** """) match {
+      case Left(value) =>
+        fail(s"${value} Didn't parse the left symbol for bold at all")
+      case Right(List(BOLDL())) => assert(true)
+      case Right(_) =>
+        fail("Parsed but returned a different parser result")
+
+    }
+  }
+  test("should parse right symbol for bold") {
+    SimpleTexLexer(""" **/""") match {
+      case Left(value) =>
+        fail("Didn't parse the right symbol for bold at all")
+      case Right(List(BOLDR())) => assert(true)
       case Right(_) =>
         fail("Parsed but returned a different parser result")
 
