@@ -52,8 +52,10 @@ case object SimpleTexLexer extends RegexParsers {
   def boldR: Parser[BOLDR] = raw"\s*\*\*/".r ^^ { _ => BOLDR() }
   def boldItalicsL: Parser[BOLDITALICSL] =
     raw"/\*\*\* ".r ^^ { _ => BOLDITALICSL() }
-  def boldItalicsR: Parser[BOLDITALICSR] =
-    raw"\s*\*\*\*/".r ^^ { _ => BOLDITALICSR() }
+  def boldItalicsR: Parser[BOLDITALICSR] = raw"\s*\*\*\*/".r ^^ { _ =>
+    BOLDITALICSR()
+  }
+
   def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
   def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
 
@@ -61,7 +63,11 @@ case object SimpleTexLexer extends RegexParsers {
   def equationR: Parser[EQUATIONR] = """\$/""".r ^^ { _ => EQUATIONR() }
   def label: Parser[LABEL] = "@label".r ^^ { _ => LABEL() }
   def content: Parser[TEXT] = "\\S+".r ^^ { content => TEXT(content) }
-  def newline: Parser[NEWLINE] = raw"\n".r ^^ { _ => NEWLINE() }
+
+  //TODO this seems to have the same problem of an empty-space-first not matching
+  //\n doesn't work but a \n will work just fine
+  //basically doesnt like it when the new line is the only (first?) part of the regex
+  def newline: Parser[NEWLINE] = raw"a \n".r ^^ { _ => NEWLINE() }
 
   def braceR: Parser[BRACER] = raw"}".r ^^ { _ => BRACER() }
   def braceL: Parser[BRACEL] = raw"{".r ^^ { _ => BRACEL() }
@@ -74,7 +80,7 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline
       )
     )
     //phrase(

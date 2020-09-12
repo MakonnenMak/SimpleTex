@@ -4,6 +4,15 @@ import org.scalatest.funsuite.AnyFunSuite
 import simpletex.lexer._;
 
 class BoldItalics extends AnyFunSuite {
+  test("should not care about spacing near the token [right]") {
+    SimpleTexLexer("""***/""") match {
+      case Left(e) =>
+        fail("Didn't parse the left symbol for bold italics at all")
+      case Right(List(BOLDITALICSR())) => assert(true)
+      case Right(v) =>
+        fail(s"Parsed but returned a different parser result: $v")
+    }
+  }
   test("should parse left symbol for bold italics") {
     SimpleTexLexer("""/*** """) match {
       case Left(value) =>
@@ -35,6 +44,15 @@ class Italics extends AnyFunSuite {
 
     }
   }
+  test("should not care about spacing near the right token") {
+    SimpleTexLexer("""*/""") match {
+      case Left(e) =>
+        fail("Didn't parse the left symbol for bold italics at all")
+      case Right(List(ITALICSR())) => assert(true)
+      case Right(v) =>
+        fail(s"Parsed but returned a different parser result: $v")
+    }
+  }
   test("should parse right symbol for italics") {
     SimpleTexLexer(""" */""") match {
       case Left(value) =>
@@ -47,6 +65,7 @@ class Italics extends AnyFunSuite {
   }
 }
 class Bold extends AnyFunSuite {
+
   test("should parse left symbol for bold") {
     SimpleTexLexer("""/** """) match {
       case Left(value) =>
@@ -66,13 +85,23 @@ class Bold extends AnyFunSuite {
         fail("Parsed but returned a different parser result")
     }
   }
+
+  test("should not care about spacing near the right token") {
+    SimpleTexLexer("""**/""") match {
+      case Left(e) =>
+        fail("Didn't parse the left symbol for bold italics at all")
+      case Right(List(BOLDR())) => assert(true)
+      case Right(v) =>
+        fail(s"Parsed but returned a different parser result: $v")
+    }
+  }
 }
 
-class SectionLexer extends AnyFunSuite {
+class SectionSubSectionLexer extends AnyFunSuite {
   test("should parse a section on a single line") {
     SimpleTexLexer("# ") match {
       case Left(value) =>
-        assert(false, "Didn't parse the section out of the string")
+        fail("Didn't parse the section out of the string")
       case Right(List(SECTION())) => assert(true)
       case Right(_)               => assert(false, "We returned more than one section")
     }
@@ -80,7 +109,7 @@ class SectionLexer extends AnyFunSuite {
   test("should parse a sub-section on a single line") {
     SimpleTexLexer("## ") match {
       case Left(value) =>
-        assert(false, "Didn't parse the subsection out of the string")
+        fail("Didn't parse the subsection out of the string")
       case Right(List(SUBSECTION())) => assert(true)
       case Right(_)                  => assert(false, "We returned more than one subsection")
     }
@@ -104,7 +133,7 @@ class CitationLexer extends AnyFunSuite {
   test("should parse an individual citation on it's own line") {
     SimpleTexLexer("@cite") match {
       case Left(value) =>
-        assert(false, "Didn't parse the citation out of the string")
+        fail("Didn't parse the citation out of the string")
       case Right(List(CITATION())) => assert(true)
       case Right(_)                => assert(false, "We returned more than one citations")
     }
@@ -128,10 +157,40 @@ class EquationLexer extends AnyFunSuite {
       case Right(List(EQUATIONR())) => assert(true)
       case Right(_)                 => assert(false, "We returned more than one equation")
     }
-
   }
 }
 
+class LayoutLexer extends AnyFunSuite {
+  test("should parse a layout on a line correctly") {
+    SimpleTexLexer("%% ") match {
+      case Left(value)           => fail("Didn't parse layout out of string")
+      case Right(List(LAYOUT())) => assert(true)
+      case Right(_)              => assert(false, "We returned more than one layout")
+    }
+  }
+}
+
+class LabelLexer extends AnyFunSuite {
+  test("should parse any content in a @label tag") {
+    SimpleTexLexer("@label") match {
+      case Left(value)          => fail("Didn't parse label out of string")
+      case Right(List(LABEL())) => assert(true)
+      case Right(_)             => assert(false, "We returned more than one layout")
+    }
+  }
+}
+
+class SimpleTokenLexers extends AnyFunSuite {
+  test("newline should capture the new  line character") {
+    SimpleTexLexer("a \n") match {
+      case Left(value)            => fail(s"Didn't parse the new line: $value")
+      case Right(List(NEWLINE())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a single new line")
+    }
+
+  }
+}
 /*
 class ImageLexer extends AnyFunSuite {
 
@@ -246,27 +305,7 @@ class ItalicsLexer extends AnyFunSuite {
 }
 
 
-class LayoutLexer extends AnyFunSuite {
-  test("should parse a layout on a line correctly") {
-    SimpleTexLexer("%% layout1 \n") match {
-      case Left(value)                       => assert(false, "Didn't parse layout out of string")
-      case Right(List(LAYOUT("layout1 \n"))) => assert(true)
-      case Right(_)                          => assert(false, "We returned more than one layout")
-    }
-  }
-}
 
-class LabelLexer extends AnyFunSuite {
-  test("should parse any content in a @label tag") {
-    SimpleTexLexer("@label{some reference}\n") match {
-      case Left(value)                          => assert(false, "Didn't parse label out of string")
-      case Right(List(LABEL("some reference"))) => assert(true)
-      case Right(_)                             => assert(false, "We returned more than one layout")
-    }
-
-  }
-
-}
 class ContentLexer extends AnyFunSuite {
 
   test("should match any content if not matched by other parsers") {
