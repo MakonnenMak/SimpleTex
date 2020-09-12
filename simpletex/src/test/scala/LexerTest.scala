@@ -64,7 +64,6 @@ class Bold extends AnyFunSuite {
       case Right(List(BOLDR())) => assert(true)
       case Right(_) =>
         fail("Parsed but returned a different parser result")
-
     }
   }
 }
@@ -111,7 +110,41 @@ class CitationLexer extends AnyFunSuite {
     }
   }
 }
+class EquationLexer extends AnyFunSuite {
+
+  test("should parse left side tokens") {
+    SimpleTexLexer("""/$""") match {
+      case Left(e) =>
+        fail(s"Didn't parse the equation out of the string: $e")
+      case Right(List(EQUATIONL())) => assert(true)
+      case Right(_)                 => assert(false, "We returned more than one equation")
+    }
+  }
+
+  test("should parse right equation token") {
+    SimpleTexLexer("""$/""") match {
+      case Left(e) =>
+        fail(s"Didn't parse the equation out of the string: $e")
+      case Right(List(EQUATIONR())) => assert(true)
+      case Right(_)                 => assert(false, "We returned more than one equation")
+    }
+
+  }
+}
+
 /*
+class ImageLexer extends AnyFunSuite {
+
+  test("should correctly parse a simple image with a caption, label, and path") {
+    SimpleTexLexer("![My Caption][My Label](/this/is/a/path)") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the image out of the string")
+      case Right(List(value)) =>
+        assert(value.equals(IMAGE("My Caption", "My Label", "/this/is/a/path")))
+      case Right(_) => assert(false, "We returned more than one images")
+    }
+  }
+}
   test("should not parse text that has only one *** into bold and italics") {
     SimpleTexLexer("***some content") match {
       case Left(value) => fail("Didn't parse the string at all")
@@ -212,30 +245,6 @@ class ItalicsLexer extends AnyFunSuite {
 
 }
 
-class ImageLexer extends AnyFunSuite {
-
-  test("should correctly parse a simple image with a caption, label, and path") {
-    SimpleTexLexer("![My Caption][My Label](/this/is/a/path)") match {
-      case Left(value) =>
-        assert(false, "Didn't parse the image out of the string")
-      case Right(List(value)) =>
-        assert(value.equals(IMAGE("My Caption", "My Label", "/this/is/a/path")))
-      case Right(_) => assert(false, "We returned more than one images")
-    }
-  }
-}
-
-class EquationLexer extends AnyFunSuite {
-
-  test("should parse a simple equation with content surrounded by $ signs") {
-    SimpleTexLexer("$1+1=2$") match {
-      case Left(value) =>
-        assert(false, "Didn't parse the equation out of the string")
-      case Right(List(value)) => assert(value.equals(EQUATION("1+1=2")))
-      case Right(_)           => assert(false, "We returned more than one equation")
-    }
-  }
-}
 
 class LayoutLexer extends AnyFunSuite {
   test("should parse a layout on a line correctly") {
