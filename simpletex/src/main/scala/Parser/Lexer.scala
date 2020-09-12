@@ -74,7 +74,7 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection
       )
     )
     //phrase(

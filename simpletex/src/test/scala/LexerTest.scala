@@ -69,27 +69,27 @@ class Bold extends AnyFunSuite {
   }
 }
 
-/*
 class SectionLexer extends AnyFunSuite {
   test("should parse a section on a single line") {
-    SimpleTexLexer("# section name \n") match {
+    SimpleTexLexer("# ") match {
       case Left(value) =>
         assert(false, "Didn't parse the section out of the string")
-      case Right(List(SECTION("section name \n"))) => assert(true)
-      case Right(_)                                => assert(false, "We returned more than one section")
+      case Right(List(SECTION())) => assert(true)
+      case Right(_)               => assert(false, "We returned more than one section")
     }
   }
   test("should parse a sub-section on a single line") {
-    SimpleTexLexer("## subsection name \n") match {
+    SimpleTexLexer("## ") match {
       case Left(value) =>
         assert(false, "Didn't parse the subsection out of the string")
-      case Right(List(SUBSECTION("subsection name \n"))) => assert(true)
-      case Right(_)                                      => assert(false, "We returned more than one subsection")
+      case Right(List(SUBSECTION())) => assert(true)
+      case Right(_)                  => assert(false, "We returned more than one subsection")
     }
   }
 
 }
 
+/*
 class ReferenceLexer extends AnyFunSuite {
   test("should parse an individual reference on its own line") {
     SimpleTexLexer("@ref") match {
