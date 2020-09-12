@@ -89,7 +89,6 @@ class SectionLexer extends AnyFunSuite {
 
 }
 
-/*
 class ReferenceLexer extends AnyFunSuite {
   test("should parse an individual reference on its own line") {
     SimpleTexLexer("@ref") match {
@@ -102,7 +101,17 @@ class ReferenceLexer extends AnyFunSuite {
 
 }
 
-
+class CitationLexer extends AnyFunSuite {
+  test("should parse an individual citation on it's own line") {
+    SimpleTexLexer("@cite") match {
+      case Left(value) =>
+        assert(false, "Didn't parse the citation out of the string")
+      case Right(List(CITATION())) => assert(true)
+      case Right(_)                => assert(false, "We returned more than one citations")
+    }
+  }
+}
+/*
   test("should not parse text that has only one *** into bold and italics") {
     SimpleTexLexer("***some content") match {
       case Left(value) => fail("Didn't parse the string at all")
@@ -123,17 +132,6 @@ class ReferenceLexer extends AnyFunSuite {
     }
   }
 
-}
-
-class CitationLexer extends AnyFunSuite {
-  test("should parse an individual citation on it's own line") {
-    SimpleTexLexer("@cite{some citation material} \n") match {
-      case Left(value) =>
-        assert(false, "Didn't parse the citation out of the string")
-      case Right(List(CITATION("some citation material"))) => assert(true)
-      case Right(_)                                        => assert(false, "We returned more than one citations")
-    }
-  }
 }
 
 class BoldLexer extends AnyFunSuite {
