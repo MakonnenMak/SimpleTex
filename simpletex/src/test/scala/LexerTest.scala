@@ -58,9 +58,9 @@ class Bold extends AnyFunSuite {
     }
   }
   test("should parse right symbol for bold") {
-    SimpleTexLexer(""" **/""") match {
+    SimpleTexLexer(" **/") match {
       case Left(value) =>
-        fail("Didn't parse the right symbol for bold at all")
+        fail(s"$value Didn't parse the right symbol for bold at all")
       case Right(List(BOLDR())) => assert(true)
       case Right(_) =>
         fail("Parsed but returned a different parser result")
