@@ -182,7 +182,7 @@ class LabelLexer extends AnyFunSuite {
 
 class SimpleTokenLexers extends AnyFunSuite {
   test("newline should capture the new  line character") {
-    SimpleTexLexer("a \n") match {
+    SimpleTexLexer("\n") match {
       case Left(value)            => fail(s"Didn't parse the new line: $value")
       case Right(List(NEWLINE())) => assert(true)
       case Right(_) =>

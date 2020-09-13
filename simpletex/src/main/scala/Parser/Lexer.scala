@@ -42,6 +42,8 @@ trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
 
 case object SimpleTexLexer extends RegexParsers {
+  override def skipWhitespace = true
+  override val whiteSpace = "[ \t\r\f]+".r
   def section: Parser[SECTION] = "^# ".r ^^ { _ => SECTION() }
   def subsection: Parser[SUBSECTION] = "^## ".r ^^ { _ => SUBSECTION() }
   def layout: Parser[LAYOUT] = "^%% ".r ^^ { _ => LAYOUT() }
@@ -64,10 +66,7 @@ case object SimpleTexLexer extends RegexParsers {
   def label: Parser[LABEL] = "@label".r ^^ { _ => LABEL() }
   def content: Parser[TEXT] = "\\S+".r ^^ { content => TEXT(content) }
 
-  //TODO this seems to have the same problem of an empty-space-first not matching
-  //\n doesn't work but a \n will work just fine
-  //basically doesnt like it when the new line is the only (first?) part of the regex
-  def newline: Parser[NEWLINE] = raw"a \n".r ^^ { _ => NEWLINE() }
+  def newline: Parser[NEWLINE] = raw"\n".r ^^ { _ => NEWLINE() }
 
   def braceR: Parser[BRACER] = raw"}".r ^^ { _ => BRACER() }
   def braceL: Parser[BRACEL] = raw"{".r ^^ { _ => BRACEL() }
