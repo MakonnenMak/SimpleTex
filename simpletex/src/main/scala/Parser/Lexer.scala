@@ -36,7 +36,7 @@ case class PARENL() extends SimpleTexToken
 case class PARENR() extends SimpleTexToken
 case class SQUAREL() extends SimpleTexToken
 case class SQUARER() extends SimpleTexToken
-case class EXCLAM() extends SimpleTexToken
+case class EXSQUARE() extends SimpleTexToken
 
 trait SimpleTexCompilationError
 case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
@@ -54,9 +54,10 @@ case object SimpleTexLexer extends RegexParsers {
   def boldR: Parser[BOLDR] = raw"\s*\*\*/".r ^^ { _ => BOLDR() }
   def boldItalicsL: Parser[BOLDITALICSL] =
     raw"/\*\*\* ".r ^^ { _ => BOLDITALICSL() }
-  def boldItalicsR: Parser[BOLDITALICSR] = raw"\s*\*\*\*/".r ^^ { _ =>
-    BOLDITALICSR()
-  }
+  def boldItalicsR: Parser[BOLDITALICSR] =
+    raw"\s*\*\*\*/".r ^^ { _ =>
+      BOLDITALICSR()
+    }
 
   def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
   def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
@@ -74,12 +75,12 @@ case object SimpleTexLexer extends RegexParsers {
   def parenR: Parser[PARENR] = raw")".r ^^ { _ => PARENR() }
   def squareL: Parser[SQUAREL] = raw"[".r ^^ { _ => SQUAREL() }
   def squareR: Parser[SQUARER] = raw"]".r ^^ { _ => SQUARER() }
-  def exclam: Parser[EXCLAM] = raw"!".r ^^ { _ => EXCLAM() }
+  def exsquare: Parser[EXSQUARE] = raw"!\[".r ^^ { _ => EXSQUARE() }
 
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare
       )
     )
     //phrase(
