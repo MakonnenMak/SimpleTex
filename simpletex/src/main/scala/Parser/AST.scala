@@ -2,12 +2,16 @@ package simpletex.parser
 import scala.util.parsing.input.Positional
 
 sealed trait SimpleTexAST
+case class Document(
+    body: Seq[SimpleTexAST]
+) extends SimpleTexAST
 case class Section(
-    name: String,
+    name: Seq[String],
     subsection: Seq[Subsection],
     content: Seq[Content]
 ) extends SimpleTexAST
-case class Subsection(name: String, content: Seq[Content]) extends SimpleTexAST
+case class Subsection(name: Seq[String], content: Seq[Content])
+    extends SimpleTexAST
 case class LayoutSection(name: String, section: Section) extends SimpleTexAST
 
 sealed trait Content
