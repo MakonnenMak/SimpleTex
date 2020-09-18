@@ -23,7 +23,7 @@ class BasicParser extends AnyFunSuite {
       )
     ) match {
       case Left(e) =>
-        fail("Didn't parse the left symbol for bold italics at all")
+        fail(s"Didn't parse the left symbol for bold italics at all: $e")
       case Right(v) =>
         assert(true, s"$v")
     }
