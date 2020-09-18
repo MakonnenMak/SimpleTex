@@ -33,29 +33,40 @@ object SimpleTexParser extends Parsers {
   def block: Parser[SimpleTexAST] = {
     rep1(sections) ^^ {
       case sectionList => Document(sectionList)
-    } //TODO reduce/fold to something that is an SimpletexAST type
+    }
   }
 
   def sections: Parser[SimpleTexAST] = {
 
-    val plaintext =
-      rep1(text) ^^ { case text => PlainText(text.map(_.value)) }
-
-    val content = plaintext
-
     val subsections =
       SUBSECTION() ~ plaintext ~ NEWLINE() ~ rep(content) ^^ {
-        case _ ~ PlainText(title) ~ _ ~ content => Subsection(title, content)
+        case _ ~ title ~ _ ~ content => Subsection(title, content)
       }
     val section =
       SECTION() ~ plaintext ~ NEWLINE() ~ rep(subsections) ~ rep(content) ^^ {
-        case _ ~ PlainText(title) ~ _ ~ subsections ~ content =>
+        case _ ~ title ~ _ ~ subsections ~ content =>
           Section(title, subsections, content)
       }
 
-    section
+    val plainbody = rep1(content) ^^ {
+      case plaincontent => PlainBody(plaincontent)
+    }
 
+    // TODO implement layout section
+    section | plainbody
   }
+
+  val plaintext =
+    rep1(text) ^^ { case text => PlainText(text.map(_.value)) }
+
+  def content: Parser[Content] = {
+    val bold = BOLDL() ~ plaintext ~ BOLDR() ^^ {
+      case _ ~ plaintexts ~ _ => Bold(plaintexts)
+    }
+    // TODO implement other content types here
+    bold | plaintext
+  }
+
   private def text: Parser[TEXT] = {
     accept("string text", { case text @ TEXT(word) => text })
   }
