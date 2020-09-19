@@ -52,8 +52,10 @@ object SimpleTexParser extends Parsers {
       case plaincontent => PlainBody(plaincontent)
     }
 
-    // TODO implement layout section
-    section | plainbody
+    val layoutsection = LAYOUT() ~ plaintext ~ NEWLINE() ~ section ^^ {
+      case _ ~ layout ~ _ ~ section => LayoutSection(layout, section)
+    }
+    section | plainbody | layoutsection
   }
 
   val plaintext =
