@@ -61,11 +61,38 @@ object SimpleTexParser extends Parsers {
 
   def content: Parser[Content] = {
     val bold = BOLDL() ~ plaintext ~ BOLDR() ^^ {
-      case _ ~ plaintexts ~ _ => Bold(plaintexts)
+      case _ ~ plaintext ~ _ => Bold(plaintext)
     }
-    // TODO implement other content types here
-    bold | plaintext
+
+    val italics = ITALICSL() ~ plaintext ~ ITALICSR() ^^ {
+      case _ ~ plaintext ~ _ => Italics(plaintext)
+    }
+
+    val bolditalics = BOLDITALICSL() ~ plaintext ~ BOLDITALICSR() ^^ {
+      case _ ~ plaintext ~ _ => BoldItalics(plaintext)
+    }
+
+    val citation = CITATION() ~ BRACEL() ~ plaintext ~ BRACER() ^^ {
+      case _ ~ _ ~ plaintext ~ _ => Citation(plaintext)
+    }
+
+    val reference = REFERENCE() ~ BRACEL() ~ plaintext ~ BRACER() ^^ {
+      case _ ~ _ ~ plaintext ~ _ => Reference(plaintext)
+    }
+
+    // ![plaintext](plaintext)
+    val image =
+      EXSQUARE() ~ plaintext ~ SQUARER() ~ PARENL() ~ plaintext ~ PARENR() ^^ {
+        case _ ~ caption ~ _ ~ _ ~ path ~ _ => Image(caption, path)
+      }
+
+    bold | plaintext | italics | bolditalics | citation | reference | image
   }
+
+  def label: Parser[Annotations] =
+    LABEL() ~ BRACEL() ~ plaintext ~ BRACER() ^^ {
+      case _ ~ _ ~ plaintext ~ _ => Label(plaintext)
+    }
 
   private def text: Parser[TEXT] = {
     accept("string text", { case text @ TEXT(word) => text })
