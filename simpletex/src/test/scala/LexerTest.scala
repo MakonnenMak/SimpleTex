@@ -197,7 +197,16 @@ class SquareBracketLexer extends AnyFunSuite {
       case Left(value)            => fail(s"Didn't parse the square bracket: $value")
       case Right(List(SQUAREL())) => assert(true)
       case Right(_) =>
-        fail("We returned something other than a single new line")
+        fail("We returned something other than a left square bracket")
+    }
+
+  }
+  test("should parse out right square bracket ]") {
+    SimpleTexLexer("]") match {
+      case Left(value)            => fail(s"Didn't parse the square bracket: $value")
+      case Right(List(SQUARER())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a right square bracket")
     }
 
   }
