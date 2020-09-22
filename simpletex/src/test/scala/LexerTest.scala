@@ -191,6 +191,18 @@ class SimpleTokenLexers extends AnyFunSuite {
 
   }
 }
+class SquareBracketLexer extends AnyFunSuite {
+  test("should parse out left square bracket [") {
+    SimpleTexLexer("[") match {
+      case Left(value)            => fail(s"Didn't parse the square bracket: $value")
+      case Right(List(SQUAREL())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a single new line")
+    }
+
+  }
+}
+
 /*
 class ImageLexer extends AnyFunSuite {
 
