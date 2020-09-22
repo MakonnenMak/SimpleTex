@@ -210,6 +210,17 @@ class SquareBracketLexer extends AnyFunSuite {
     }
 
   }
+  test("should parse out exclamation !bracket ![") {
+    SimpleTexLexer("![") match {
+      case Left(value) =>
+        fail(s"Didn't parse the exclamation square bracket: $value")
+      case Right(List(EXSQUARE())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a exclamation square bracket")
+    }
+
+  }
+
 }
 
 /*
