@@ -72,14 +72,14 @@ case object SimpleTexLexer extends RegexParsers {
   def braceL: Parser[BRACEL] = raw"{".r ^^ { _ => BRACEL() }
   def parenL: Parser[PARENL] = raw"(".r ^^ { _ => PARENL() }
   def parenR: Parser[PARENR] = raw")".r ^^ { _ => PARENR() }
-  def squareL: Parser[SQUAREL] = raw"[".r ^^ { _ => SQUAREL() }
-  def squareR: Parser[SQUARER] = raw"]".r ^^ { _ => SQUARER() }
+  def squareL: Parser[SQUAREL] = raw"\[".r ^^ { _ => SQUAREL() }
+  def squareR: Parser[SQUARER] = raw"\]".r ^^ { _ => SQUARER() }
   def exsquare: Parser[EXSQUARE] = raw"!\[".r ^^ { _ => EXSQUARE() }
 
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare | squareL
       )
     )
     //phrase(
