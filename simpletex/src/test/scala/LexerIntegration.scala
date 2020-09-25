@@ -1,6 +1,20 @@
 package simpletex.lexer
 import org.scalatest.funsuite.AnyFunSuite
 import simpletex.lexer._
+
+class ISubsectionPlain extends AnyFunSuite {
+  test("Subsection with short plaintext content") {
+    SimpleTexLexer("## Subsection") match {
+      case Left(value) => assert(false, s"$value")
+      case Right(List(SUBSECTION(), TEXT("Subsection"))) =>
+        assert(true)
+      case Right(_) =>
+        assert(false, "We returned more than a section with text")
+    }
+
+  }
+}
+
 /*
 // TODO use the word I in the test names
 class ILexerHeader extends AnyFunSuite {
