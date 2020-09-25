@@ -9,9 +9,53 @@ class ISubsectionPlain extends AnyFunSuite {
       case Right(List(SUBSECTION(), TEXT("Subsection"))) =>
         assert(true)
       case Right(_) =>
-        assert(false, "We returned more than a section with text")
+        assert(false, "We returned more than a subsection with short text")
+    }
+  }
+  test("Subsection with longer plaintext content") {
+    SimpleTexLexer("## Subsection With A Lot More Words") match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              TEXT("With"),
+              TEXT("A"),
+              TEXT("Lot"),
+              TEXT("More"),
+              TEXT("Words")
+            )
+          ) =>
+        assert(true)
+      case Right(_) =>
+        assert(false, "We returned more than a subsection with long text")
     }
 
+  }
+}
+
+class ISubsectionTextModifier extends AnyFunSuite {
+  test("Subsection with bold text and plain text") {
+    SimpleTexLexer("## Subsection \n /** Hello **/ world") match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              NEWLINE(),
+              BOLDL(),
+              TEXT("Hello"),
+              BOLDR(),
+              TEXT("world")
+            )
+          ) =>
+        assert(true)
+      case Right(value) =>
+        assert(
+          false,
+          s"$value We returned more than a subsection with bold text and plain text"
+        )
+    }
   }
 }
 
