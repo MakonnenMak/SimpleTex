@@ -239,6 +239,25 @@ class SquareBracketLexer extends AnyFunSuite {
         fail("We returned something other than a left brace")
     }
   }
+
+  test("should parse left parentheses") {
+    SimpleTexLexer("(") match {
+      case Left(value) =>
+        fail(s"Didn't parse the left paren: $value")
+      case Right(List(PARENL())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a left paren")
+    }
+  }
+  test("should parse rigt parentheses") {
+    SimpleTexLexer(")") match {
+      case Left(value) =>
+        fail(s"Didn't parse the right paren")
+      case Right(List(PARENR())) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than a left paren")
+    }
+  }
 }
 
 /*
