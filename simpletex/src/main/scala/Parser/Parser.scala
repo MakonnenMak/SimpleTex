@@ -82,7 +82,6 @@ object SimpleTexParser extends Parsers {
       case _ ~ _ ~ plaintext ~ _ => Reference(plaintext)
     }
 
-    // ![plaintext](plaintext)
     val image =
       EXSQUARE() ~ plaintext ~ SQUARER() ~ PARENL() ~ plaintext ~ PARENR() ^^ {
         case _ ~ caption ~ _ ~ _ ~ path ~ _ => Image(caption, path)
