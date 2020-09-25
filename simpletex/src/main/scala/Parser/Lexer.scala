@@ -66,8 +66,8 @@ case object SimpleTexLexer extends RegexParsers {
 
   def newline: Parser[NEWLINE] = raw"\n".r ^^ { _ => NEWLINE() }
 
-  def braceR: Parser[BRACER] = raw"}".r ^^ { _ => BRACER() }
-  def braceL: Parser[BRACEL] = raw"{".r ^^ { _ => BRACEL() }
+  def braceR: Parser[BRACER] = raw"\}".r ^^ { _ => BRACER() }
+  def braceL: Parser[BRACEL] = raw"\{".r ^^ { _ => BRACEL() }
   def parenL: Parser[PARENL] = raw"(".r ^^ { _ => PARENL() }
   def parenR: Parser[PARENR] = raw")".r ^^ { _ => PARENR() }
   def squareL: Parser[SQUAREL] = raw"\[".r ^^ { _ => SQUAREL() }
