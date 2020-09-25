@@ -54,9 +54,7 @@ case object SimpleTexLexer extends RegexParsers {
   def boldItalicsL: Parser[BOLDITALICSL] =
     raw"/\*\*\* ".r ^^ { _ => BOLDITALICSL() }
   def boldItalicsR: Parser[BOLDITALICSR] =
-    raw"\s*\*\*\*/".r ^^ { _ =>
-      BOLDITALICSR()
-    }
+    raw"\s*\*\*\*/".r ^^ { _ => BOLDITALICSR() }
 
   def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
   def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
@@ -79,7 +77,7 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare | squareL | squareR
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare | squareL | squareR | braceL | braceR
       )
     )
     //phrase(
