@@ -258,4 +258,13 @@ class SquareBracketLexer extends AnyFunSuite {
         fail("We returned something other than a left paren")
     }
   }
+  test("should parse plaintext content if nothing else parses it") {
+    SimpleTexLexer("hello world") match {
+      case Left(value) =>
+        fail(s"Didn't parse the content")
+      case Right(List(TEXT("hello"), TEXT("world"))) => assert(true)
+      case Right(_) =>
+        fail("We returned something other than two plaintext objects")
+    }
+  }
 }
