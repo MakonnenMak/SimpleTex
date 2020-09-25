@@ -33,7 +33,7 @@ class BoldItalics extends AnyFunSuite {
   }
 }
 
-class Italics extends AnyFunSuite {
+class UnitItalics extends AnyFunSuite {
   test("should parse left symbol for italics") {
     SimpleTexLexer("""/* """) match {
       case Left(value) =>
