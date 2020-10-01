@@ -103,6 +103,37 @@ class ISubsectionTextModifier extends AnyFunSuite {
   }
 }
 
+class ISubsectionTags extends AnyFunSuite {
+  test("Subsection with citations and plaintext") {
+    SimpleTexLexer(
+      // Note: Spaces are required with current lexer in citation
+      "## Subsection \n Earth is a planet @cite{ something }"
+    ) match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              NEWLINE(),
+              TEXT("Earth"),
+              TEXT("is"),
+              TEXT("a"),
+              TEXT("planet"),
+              CITATION(),
+              BRACEL(),
+              TEXT("something"),
+              BRACER()
+            )
+          ) =>
+        assert(true)
+      case Right(value) =>
+        assert(
+          false,
+          s"$value We returned more than a subsection with a citation and plain text"
+        )
+    }
+  }
+}
 /*
 // TODO use the word I in the test names
 class ILexerHeader extends AnyFunSuite {
