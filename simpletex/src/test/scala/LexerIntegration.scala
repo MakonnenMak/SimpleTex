@@ -79,6 +79,28 @@ class ISubsectionTextModifier extends AnyFunSuite {
         )
     }
   }
+  test("Subsection with bold-italics text and plaintext") {
+    SimpleTexLexer("## Subsection \n /*** Hello ***/ world") match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              NEWLINE(),
+              BOLDITALICSL(),
+              TEXT("Hello"),
+              BOLDITALICSR(),
+              TEXT("world")
+            )
+          ) =>
+        assert(true)
+      case Right(value) =>
+        assert(
+          false,
+          s"$value We returned more than a subsection with bold-italics text and plain text"
+        )
+    }
+  }
 }
 
 /*
