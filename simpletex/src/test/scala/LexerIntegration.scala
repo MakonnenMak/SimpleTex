@@ -133,6 +133,35 @@ class ISubsectionTags extends AnyFunSuite {
         )
     }
   }
+  test("Subsection with reference and plaintext") {
+    SimpleTexLexer(
+      // Note: Spaces are required with current lexer in reference as well
+      "## Subsection \n Earth is a planet @ref{ something }"
+    ) match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              NEWLINE(),
+              TEXT("Earth"),
+              TEXT("is"),
+              TEXT("a"),
+              TEXT("planet"),
+              REFERENCE(),
+              BRACEL(),
+              TEXT("something"),
+              BRACER()
+            )
+          ) =>
+        assert(true)
+      case Right(value) =>
+        assert(
+          false,
+          s"$value We returned more than a subsection with a reference and plain text"
+        )
+    }
+  }
 }
 /*
 // TODO use the word I in the test names
