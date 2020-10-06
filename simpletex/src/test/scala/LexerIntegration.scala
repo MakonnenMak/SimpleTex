@@ -30,7 +30,27 @@ class ISubsectionPlain extends AnyFunSuite {
       case Right(_) =>
         assert(false, "We returned more than a subsection with long text")
     }
-
+  }
+  test("Subsection with equation and plaintext content") {
+    SimpleTexLexer("## Subsection \n /$ 4x^2 $/") match {
+      case Left(value) => assert(false, s"$value")
+      case Right(
+            List(
+              SUBSECTION(),
+              TEXT("Subsection"),
+              NEWLINE(),
+              EQUATIONL(),
+              TEXT("4x^2"),
+              EQUATIONR()
+            )
+          ) =>
+        assert(true)
+      case Right(_) =>
+        assert(
+          false,
+          "We returned more than a subsection with an equation and text"
+        )
+    }
   }
 }
 
