@@ -23,6 +23,7 @@ case class BoldItalics(text: PlainText) extends Content
 case class Citation(text: PlainText) extends Content
 case class Reference(text: PlainText) extends Content
 case class Image(caption: PlainText, path: PlainText) extends Content
+case class Equation(text: PlainText) extends Content
 
 sealed trait Annotations
 case class Label(value: PlainText) extends Annotations
