@@ -133,6 +133,19 @@ class BasicParser extends AnyFunSuite {
       case Left(value)  => fail(s"We didn't parse this correctly: $value")
       case Right(value) => assert(true)
     }
-
+  }
+  test("reference should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        REFERENCE(),
+        BRACEL(),
+        TEXT("Some"),
+        TEXT("Reference"),
+        BRACER()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
   }
 }
