@@ -16,15 +16,15 @@ class ISubsectionPlain extends AnyFunSuite {
     SimpleTexLexer("## Subsection With A Lot More Words") match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              TEXT("With"),
-              TEXT("A"),
-              TEXT("Lot"),
-              TEXT("More"),
-              TEXT("Words")
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            TEXT("With"),
+            TEXT("A"),
+            TEXT("Lot"),
+            TEXT("More"),
+            TEXT("Words")
+          )
           ) =>
         assert(true)
       case Right(_) =>
@@ -35,14 +35,14 @@ class ISubsectionPlain extends AnyFunSuite {
     SimpleTexLexer("## Subsection \n /$ 4x^2 $/") match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              EQUATIONL(),
-              TEXT("4x^2"),
-              EQUATIONR()
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            EQUATIONL(),
+            TEXT("4x^2"),
+            EQUATIONR()
+          )
           ) =>
         assert(true)
       case Right(_) =>
@@ -59,15 +59,15 @@ class ISubsectionTextModifier extends AnyFunSuite {
     SimpleTexLexer("## Subsection \n /** Hello **/ world") match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              BOLDL(),
-              TEXT("Hello"),
-              BOLDR(),
-              TEXT("world")
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            BOLDL(),
+            TEXT("Hello"),
+            BOLDR(),
+            TEXT("world")
+          )
           ) =>
         assert(true)
       case Right(value) =>
@@ -81,15 +81,15 @@ class ISubsectionTextModifier extends AnyFunSuite {
     SimpleTexLexer("## Subsection \n /* Hello */ world") match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              ITALICSL(),
-              TEXT("Hello"),
-              ITALICSR(),
-              TEXT("world")
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            ITALICSL(),
+            TEXT("Hello"),
+            ITALICSR(),
+            TEXT("world")
+          )
           ) =>
         assert(true)
       case Right(value) =>
@@ -103,15 +103,15 @@ class ISubsectionTextModifier extends AnyFunSuite {
     SimpleTexLexer("## Subsection \n /*** Hello ***/ world") match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              BOLDITALICSL(),
-              TEXT("Hello"),
-              BOLDITALICSR(),
-              TEXT("world")
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            BOLDITALICSL(),
+            TEXT("Hello"),
+            BOLDITALICSR(),
+            TEXT("world")
+          )
           ) =>
         assert(true)
       case Right(value) =>
@@ -131,19 +131,19 @@ class ISubsectionTags extends AnyFunSuite {
     ) match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              TEXT("Earth"),
-              TEXT("is"),
-              TEXT("a"),
-              TEXT("planet"),
-              CITATION(),
-              BRACEL(),
-              TEXT("something"),
-              BRACER()
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            TEXT("Earth"),
+            TEXT("is"),
+            TEXT("a"),
+            TEXT("planet"),
+            CITATION(),
+            BRACEL(),
+            TEXT("something"),
+            BRACER()
+          )
           ) =>
         assert(true)
       case Right(value) =>
@@ -160,19 +160,19 @@ class ISubsectionTags extends AnyFunSuite {
     ) match {
       case Left(value) => assert(false, s"$value")
       case Right(
-            List(
-              SUBSECTION(),
-              TEXT("Subsection"),
-              NEWLINE(),
-              TEXT("Earth"),
-              TEXT("is"),
-              TEXT("a"),
-              TEXT("planet"),
-              REFERENCE(),
-              BRACEL(),
-              TEXT("something"),
-              BRACER()
-            )
+          List(
+            SUBSECTION(),
+            TEXT("Subsection"),
+            NEWLINE(),
+            TEXT("Earth"),
+            TEXT("is"),
+            TEXT("a"),
+            TEXT("planet"),
+            REFERENCE(),
+            BRACEL(),
+            TEXT("something"),
+            BRACER()
+          )
           ) =>
         assert(true)
       case Right(value) =>
@@ -183,156 +183,237 @@ class ISubsectionTags extends AnyFunSuite {
     }
   }
 }
-/*
-// TODO use the word I in the test names
-class ILexerHeader extends AnyFunSuite {
-  test("A section with a subsection directly below it") {
-    SimpleTexLexer("# section name \n ## subsection name \n") match {
+
+class ISectionTextModifers extends AnyFunSuite {
+  test("with a plaintext title should parse correctly") {
+    SimpleTexLexer("# section name \n") match {
       case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and subsection out of the string"
-        )
-      case Right(
-          List(SECTION("section name \n"), SUBSECTION("subsection name \n"))
-          ) =>
+        fail("Didn't parse the section out of the string")
+      case Right(List(SECTION(), TEXT("section"), TEXT("name"), NEWLINE())) =>
         assert(true)
-      case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and subsection"
-        ) // TO DO, there are other possibilities here. Should add more cases
+      case Right(_) => assert(false, "We returned more than one section")
     }
   }
-}
-
-class ILexerSectionSubContent extends AnyFunSuite {
-  test("throwaway") {
-    SimpleTexLexer("hi hi **bold stuff** hi2 hi3") match {
+  test("with a plaintext content following section should parse") {
+    SimpleTexLexer("# section name \n more plaintext content") match {
       case Left(value) =>
-        assert(
-          false,
-          s"Didn't parse the content and bold text out of the string: $value"
-        )
+        fail("Didn't parse the section out of the string")
       case Right(
           List(
-            CONTENT("hi"),
-            CONTENT("hi"),
-            BOLD("bold stuff"),
-            CONTENT("hi2"),
-            CONTENT("hi3")
-          )
-          ) =>
-        assert(true)
-      case Right(a) =>
-        assert(
-          false,
-          s"We returned more than a section and a bold piece of text: $a"
-        )
-    }
-
-  }
-
-}
-class ILexerSectionFormatting extends AnyFunSuite {
-  test("A section with a bold piece of text below it") {
-    SimpleTexLexer("# section name \n **Hello World!**") match {
-      case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and bold text out of the string"
-        )
-      case Right(
-          List(SECTION("section name \n"), BOLD("Hello World!"))
-          ) =>
-        assert(true)
-      case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and a bold piece of text"
-        )
-    }
-  }
-
-  test("A section with a italisized piece of text below it") {
-    SimpleTexLexer("# section name \n *Fancy italic text*") match {
-      case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and italisized text out of the string"
-        )
-      case Right(
-          List(SECTION("section name \n"), ITALICS("Fancy italic text"))
-          ) =>
-        assert(true)
-      case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and an italisized piece of text"
-        )
-    }
-  }
-
-  test("A section with a bold+italisized piece of text below it") {
-    SimpleTexLexer("# section name \n ***Bold and fancy italics***") match {
-      case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and bold+italisized text out of the string"
-        )
-      case Right(
-          List(
-            SECTION("section name \n"),
-            BOLDITALICS("Bold and fancy italics")
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("more"),
+            TEXT("plaintext"),
+            TEXT("content")
           )
           ) =>
         assert(true)
       case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and a bold+italisized piece of text"
-        )
+        assert(false, "We returned the wrong structure or a non section")
     }
   }
-
-  test("A section with a reference below it") {
-    SimpleTexLexer("# section name \n @ref{some label} ") match {
-      case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and reference out of the string"
-        )
-      case Right(
-          List(SECTION("section name \n"), REFERENCE("some label"))
-          ) =>
-        assert(true)
-      case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and a reference"
-        )
-    }
-  }
-
-  test("A section with a citation below it") {
+  test("with a large plaintext content should parse") {
     SimpleTexLexer(
-      "# section name \n @cite{some citation} "
+      "# section name \n  more more more more more more more more more more more more more more more more"
     ) match {
       case Left(value) =>
-        assert(
-          false,
-          "Didn't parse the section and citation out of the string"
-        )
+        fail("Didn't parse the section out of the string")
       case Right(
-          List(SECTION("section name \n"), CITATION("some citation"))
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more"),
+            TEXT("more")
+          )
           ) =>
         assert(true)
       case Right(_) =>
-        assert(
-          false,
-          "We returned more than a section and a citation"
-        )
+        assert(false, "We returned the wrong structure or a non section")
+    }
+  }
+
+  test("with plaintext and bold should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with /** bold items **/ should parse"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            BOLDL(),
+            TEXT("bold"),
+            TEXT("items"),
+            BOLDR(),
+            TEXT("should"),
+            TEXT("parse")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
+    }
+  }
+  test("with plaintext and bolditalics should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with /*** bolditalics items ***/ should parse"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            BOLDITALICSL(),
+            TEXT("bolditalics"),
+            TEXT("items"),
+            BOLDITALICSR(),
+            TEXT("should"),
+            TEXT("parse")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
+    }
+  }
+  test("with plaintext and italics should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with /* italics items */ should parse"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            ITALICSL(),
+            TEXT("italics"),
+            TEXT("items"),
+            ITALICSR(),
+            TEXT("should"),
+            TEXT("parse")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
     }
   }
 }
- */
+
+class ISectionRefs extends AnyFunSuite {
+  test("with plaintext and references should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with @ref{ some label } more plaintext"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            REFERENCE(),
+            BRACEL(),
+            TEXT("some"),
+            TEXT("label"),
+            BRACER(),
+            TEXT("more"),
+            TEXT("plaintext")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
+    }
+  }
+
+  test("with plaintext and equations should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with /$ 1 + 1 = 2 $/ more plaintext"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            EQUATIONL(),
+            TEXT("1"),
+            TEXT("+"),
+            TEXT("1"),
+            TEXT("="),
+            TEXT("2"),
+            EQUATIONR(),
+            TEXT("more"),
+            TEXT("plaintext")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
+    }
+  }
+
+  test("with plaintext and citations should parse") {
+    SimpleTexLexer(
+      "# section name \n plaintext mixed with @cite{ citations here } more plaintext"
+    ) match {
+      case Left(value) => fail("Didn't parse the mixed content correctly")
+      case Right(
+          List(
+            SECTION(),
+            TEXT("section"),
+            TEXT("name"),
+            NEWLINE(),
+            TEXT("plaintext"),
+            TEXT("mixed"),
+            TEXT("with"),
+            CITATION(),
+            BRACEL(),
+            TEXT("citations"),
+            TEXT("here"),
+            BRACER(),
+            TEXT("more"),
+            TEXT("plaintext")
+          )
+          ) =>
+        assert(true)
+      case Right(wrong) => assert(false, s"We returned something else: $wrong")
+    }
+  }
+}

@@ -54,9 +54,7 @@ case object SimpleTexLexer extends RegexParsers {
   def boldItalicsL: Parser[BOLDITALICSL] =
     raw"/\*\*\* ".r ^^ { _ => BOLDITALICSL() }
   def boldItalicsR: Parser[BOLDITALICSR] =
-    raw"\s*\*\*\*/".r ^^ { _ =>
-      BOLDITALICSR()
-    }
+    raw"\s*\*\*\*/".r ^^ { _ => BOLDITALICSR() }
 
   def citation: Parser[CITATION] = raw"@cite".r ^^ { _ => CITATION() }
   def reference: Parser[REFERENCE] = raw"@ref".r ^^ { _ => REFERENCE() }
@@ -70,8 +68,8 @@ case object SimpleTexLexer extends RegexParsers {
 
   def braceR: Parser[BRACER] = raw"\}".r ^^ { _ => BRACER() }
   def braceL: Parser[BRACEL] = raw"\{".r ^^ { _ => BRACEL() }
-  def parenL: Parser[PARENL] = raw"(".r ^^ { _ => PARENL() }
-  def parenR: Parser[PARENR] = raw")".r ^^ { _ => PARENR() }
+  def parenL: Parser[PARENL] = raw"\(".r ^^ { _ => PARENL() }
+  def parenR: Parser[PARENR] = raw"\)".r ^^ { _ => PARENR() }
   def squareL: Parser[SQUAREL] = raw"\[".r ^^ { _ => SQUAREL() }
   def squareR: Parser[SQUARER] = raw"\]".r ^^ { _ => SQUARER() }
   def exsquare: Parser[EXSQUARE] = raw"!\[".r ^^ { _ => EXSQUARE() }
@@ -79,14 +77,9 @@ case object SimpleTexLexer extends RegexParsers {
   def tokens: Parser[List[SimpleTexToken]] = {
     phrase(
       rep1(
-        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare | squareL | squareR | braceL | braceR | subsection | content | newline
+        boldItalicsL | boldItalicsR | italicsL | italicsR | boldL | boldR | section | subsection | reference | citation | equationL | equationR | layout | label | newline | exsquare | squareL | squareR | braceL | braceR | parenL | parenR | content
       )
     )
-    //phrase(
-    //rep1(
-    //citation | reference | section | subsection | boldL | boldR | italicsL | italicsR | boldItalicsL | boldItalicsR | equationL | equationR | layout | label | content | newline | braceL | braceR | parenL | parenR | squareL | squareR | exclam
-    //)
-    //)
   }
   def apply(code: String): Either[SimpleTexLexerError, List[SimpleTexToken]] = {
     parse(tokens, code) match {
