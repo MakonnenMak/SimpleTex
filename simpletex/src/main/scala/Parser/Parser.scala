@@ -86,8 +86,12 @@ object SimpleTexParser extends Parsers {
       EXSQUARE() ~ plaintext ~ SQUARER() ~ PARENL() ~ plaintext ~ PARENR() ^^ {
         case _ ~ caption ~ _ ~ _ ~ path ~ _ => Image(caption, path)
       }
+    val equation =
+      EQUATIONL() ~ plaintext ~ EQUATIONR() ^^ {
+        case _ ~ plaintext ~ _ => Equation(plaintext)
+      }
 
-    bold | plaintext | italics | bolditalics | citation | reference | image
+    bold | plaintext | italics | bolditalics | citation | reference | image | equation
   }
 
   def label: Parser[Annotations] =

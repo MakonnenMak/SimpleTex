@@ -62,4 +62,90 @@ class BasicParser extends AnyFunSuite {
       case Right(value) => assert(true)
     }
   }
+
+  test("Bold italics should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        BOLDITALICSL(),
+        TEXT("hello"),
+        TEXT("world"),
+        BOLDITALICSR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
+  test("italics should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        ITALICSL(),
+        TEXT("hello"),
+        TEXT("world"),
+        ITALICSR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
+  test("equation should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        EQUATIONL(),
+        TEXT("4x^2"),
+        TEXT("+"),
+        TEXT("5"),
+        EQUATIONR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
+  test("image should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        EXSQUARE(),
+        TEXT("Some"),
+        TEXT("Description"),
+        SQUARER(),
+        PARENL(),
+        TEXT("./some/path"),
+        PARENR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+
+  }
+  test("citation should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        CITATION(),
+        BRACEL(),
+        TEXT("Some"),
+        TEXT("Citation"),
+        BRACER()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
+  test("reference should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        REFERENCE(),
+        BRACEL(),
+        TEXT("Some"),
+        TEXT("Reference"),
+        BRACER()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
 }
