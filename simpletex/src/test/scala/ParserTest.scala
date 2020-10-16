@@ -89,4 +89,18 @@ class BasicParser extends AnyFunSuite {
       case Right(value) => assert(true)
     }
   }
+  test("equation should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        EQUATIONL(),
+        TEXT("4x^2"),
+        TEXT("+"),
+        TEXT("5"),
+        EQUATIONR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
 }
