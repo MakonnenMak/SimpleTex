@@ -120,4 +120,19 @@ class BasicParser extends AnyFunSuite {
     }
 
   }
+  test("citation should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        CITATION(),
+        BRACEL(),
+        TEXT("Some"),
+        TEXT("Citation"),
+        BRACER()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+
+  }
 }
