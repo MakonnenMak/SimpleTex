@@ -76,4 +76,17 @@ class BasicParser extends AnyFunSuite {
       case Right(value) => assert(true)
     }
   }
+  test("italics should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        ITALICSL(),
+        TEXT("hello"),
+        TEXT("world"),
+        ITALICSR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
 }
