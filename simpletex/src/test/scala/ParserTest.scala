@@ -103,4 +103,21 @@ class BasicParser extends AnyFunSuite {
       case Right(value) => assert(true)
     }
   }
+  test("image should parse correctly") {
+    SimpleTexParser(
+      Seq(
+        EXSQUARE(),
+        TEXT("Some"),
+        TEXT("Description"),
+        SQUARER(),
+        PARENL(),
+        TEXT("./some/path"),
+        PARENR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+
+  }
 }
