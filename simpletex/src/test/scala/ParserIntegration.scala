@@ -55,7 +55,28 @@ class ParserSectionIntegrationLarge extends AnyFunSuite { //idk what to name the
   }
 }
 class ParserSubsectionIntegration extends AnyFunSuite {
-  test("some test") {
+  test("subsection with plaintext") {
+    assert(true)
+  }
+  test("subsection with large plaintext") {
+    assert(true)
+  }
+  test("subsection with bold text and plaintext") {
+    assert(true)
+  }
+  test("subsection with italics text and plaintext") {
+    assert(true)
+  }
+  test("subsection with bolditalics text and plaintext") {
+    assert(true)
+  }
+  test("subsection with citations and plaintext") {
+    assert(true)
+  }
+  test("subsection with references and plaintext") {
+    assert(true)
+  }
+  test("subsection with equations and plaintext") {
     assert(true)
   }
 }
