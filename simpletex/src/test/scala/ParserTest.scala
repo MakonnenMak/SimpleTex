@@ -1,33 +1,10 @@
-package simpletex.lexer;
+package simpletex.parser;
 import org.scalatest.funsuite.AnyFunSuite
 
 import simpletex.lexer._;
 import simpletex.parser._;
 
 class BasicParser extends AnyFunSuite {
-  test("Parsing a section") {
-    SimpleTexParser(
-      Seq(
-        SECTION(),
-        TEXT("hi"),
-        TEXT("world"),
-        NEWLINE(),
-        TEXT("fun"),
-        TEXT("yayy"),
-        SECTION(),
-        TEXT("Dog"),
-        TEXT("cat"),
-        NEWLINE(),
-        TEXT("woof"),
-        TEXT("woof")
-      )
-    ) match {
-      case Left(e) =>
-        fail(s"Didn't parse the left symbol for bold italics at all: $e")
-      case Right(v) =>
-        assert(true)
-    }
-  }
 
   test("Bold should parse correctly") {
     SimpleTexParser(
@@ -35,32 +12,34 @@ class BasicParser extends AnyFunSuite {
         BOLDL(),
         TEXT("hello"),
         TEXT("world"),
-        TEXT("hi"),
         BOLDR()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(PlainBody(List(Bold(PlainText(List("hello", "world"))))))
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"We parsed something else: $value")
+
     }
   }
 
-  test("Section with bold content parses") {
-    SimpleTexParser(
-      Seq(
-        SECTION(),
-        TEXT("hi"),
-        TEXT("world"),
-        NEWLINE(),
-        BOLDL(),
-        TEXT("hello"),
-        TEXT("world"),
-        TEXT("hi"),
-        BOLDR()
-      )
-    ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+  test("sections should parse correctly") {
+
+    SimpleTexParser(Seq(SECTION(), TEXT("section"), TEXT("title"), NEWLINE())) match {
+      case Left(value) => fail(s"We didn't parse it correclty: $value")
+      case Right(
+          Document(
+            List(Section(PlainText(List("section", "title")), List(), List()))
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"We parsed into something incorrect $value")
     }
+
   }
 
   test("Bold italics should parse correctly") {
