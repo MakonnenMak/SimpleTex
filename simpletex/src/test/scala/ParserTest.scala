@@ -82,7 +82,34 @@ class BasicParser extends AnyFunSuite {
 
   }
 
-  test("layout section should parse") {}
+  test("layout section should parse") {
+    SimpleTexParser(
+      Seq(
+        LAYOUT(),
+        TEXT("layout"),
+        TEXT("NAME"),
+        NEWLINE(),
+        SECTION(),
+        TEXT("section"),
+        TEXT("name"),
+        NEWLINE()
+      )
+    ) match {
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(
+              LayoutSection(
+                PlainText(List("layout", "NAME")),
+                Section(PlainText(List("section", "name")), List(), List())
+              )
+            )
+          )
+          ) =>
+        assert(true)
+    }
+
+  }
 
   test("Bold italics should parse correctly") {
     SimpleTexParser(
