@@ -1,9 +1,30 @@
-package simpletex.lexer;
+package simpletex.parser;
 import org.scalatest.funsuite.AnyFunSuite
 
 import simpletex.lexer._;
 import simpletex.parser._;
 
+class ParserSectionIntegration extends AnyFunSuite {
+
+  test("Section with bold content parses") {
+    SimpleTexParser(
+      Seq(
+        SECTION(),
+        TEXT("hi"),
+        TEXT("world"),
+        NEWLINE(),
+        BOLDL(),
+        TEXT("hello"),
+        TEXT("world"),
+        TEXT("hi"),
+        BOLDR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
+  }
+}
 class ParserSectionIntegrationLarge extends AnyFunSuite { //idk what to name the class
   test("Section with layout and a lot of other content") {
     SimpleTexParser(
