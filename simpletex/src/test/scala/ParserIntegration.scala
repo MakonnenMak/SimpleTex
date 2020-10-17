@@ -249,8 +249,28 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         ITALICSR()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(
+              Section(
+                PlainText(List("Section")),
+                List(
+                  Subsection(
+                    PlainText(List("my", "subsection")),
+                    List(
+                      PlainText(List("hello")),
+                      Italics(PlainText(List("world")))
+                    )
+                  )
+                ),
+                List()
+              )
+            )
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"we parsed this to something else: $value")
     }
   }
   test("subsection with bolditalics text and plaintext") {
@@ -269,8 +289,28 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         BOLDITALICSR()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(
+              Section(
+                PlainText(List("Section")),
+                List(
+                  Subsection(
+                    PlainText(List("my", "subsection")),
+                    List(
+                      PlainText(List("hello")),
+                      BoldItalics(PlainText(List("world")))
+                    )
+                  )
+                ),
+                List()
+              )
+            )
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"we parsed into something else $value")
     }
   }
   test("subsection with citations and plaintext") {
@@ -292,8 +332,28 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         BRACER()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(
+              Section(
+                PlainText(List("Section")),
+                List(
+                  Subsection(
+                    PlainText(List("my", "subsection")),
+                    List(
+                      PlainText(List("hello", "world")),
+                      Citation(PlainText(List("Some", "Citation")))
+                    )
+                  )
+                ),
+                List()
+              )
+            )
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"We parsed this into something else $value")
     }
   }
   test("subsection with references and plaintext") {
@@ -315,8 +375,28 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         BRACER()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+          Document(
+            List(
+              Section(
+                PlainText(List("Section")),
+                List(
+                  Subsection(
+                    PlainText(List("my", "subsection")),
+                    List(
+                      PlainText(List("hello", "world")),
+                      Reference(PlainText(List("Some", "Reference")))
+                    )
+                  )
+                ),
+                List()
+              )
+            )
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"We parsed this to something else $value")
     }
   }
   test("subsection with equations and plaintext") {
