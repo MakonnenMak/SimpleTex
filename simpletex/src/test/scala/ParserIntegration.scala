@@ -209,8 +209,28 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         BOLDR()
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+            Document(
+              List(
+                Section(
+                  PlainText(List("Section")),
+                  List(
+                    Subsection(
+                      PlainText(List("my", "subsection")),
+                      List(
+                        PlainText(List("hello")),
+                        Bold(PlainText(List("world")))
+                      )
+                    )
+                  ),
+                  List()
+                )
+              )
+            )
+          ) =>
+        assert(true)
+      case Right(other) => fail(s"We didn't parse this correctly: $other")
     }
   }
   test("subsection with italics text and plaintext") {
