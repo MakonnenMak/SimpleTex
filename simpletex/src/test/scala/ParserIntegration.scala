@@ -70,8 +70,34 @@ class ParserSectionIntegrationLarge extends AnyFunSuite { //idk what to name the
     ) match {
       case Left(value) =>
         fail(s"We didn't parse this correctly: $value")
-      case Right(value) =>
+      case Right(
+            Document(
+              List(
+                LayoutSection(
+                  PlainText(List("l1")),
+                  Section(
+                    PlainText(List("Intro", "Section")),
+                    List(),
+                    List(
+                      BoldItalics(PlainText(List("hello", "world"))),
+                      PlainText(List("this", "is", "an")),
+                      Bold(PlainText(List("important"))),
+                      Italics(PlainText(List("paper"))),
+                      PlainText(List("equations")),
+                      Equation(PlainText(List("4x^2+5"))),
+                      PlainText(List("citations")),
+                      Citation(PlainText(List("Some", "Citation"))),
+                      PlainText(List("Some", "Reference")),
+                      Reference(PlainText(List("Some", "Reference")))
+                    )
+                  )
+                )
+              )
+            )
+          ) =>
         assert(true)
+      case Right(other) =>
+        fail(s"We didn't parse this correctly: $other")
     }
   }
 }
