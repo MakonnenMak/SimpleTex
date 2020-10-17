@@ -158,8 +158,39 @@ class ParserSubsectionIntegration extends AnyFunSuite {
         TEXT("think")
       )
     ) match {
-      case Left(value)  => fail(s"We didn't parse this correctly: $value")
-      case Right(value) => assert(true)
+      case Left(value) => fail(s"We didn't parse this correctly: $value")
+      case Right(
+            Document(
+              List(
+                Section(
+                  PlainText(List("Section")),
+                  List(
+                    Subsection(
+                      PlainText(List("my", "subsection")),
+                      List(
+                        PlainText(
+                          List(
+                            "this",
+                            "is",
+                            "a",
+                            "large",
+                            "amount",
+                            "of",
+                            "plaintext",
+                            "i",
+                            "think"
+                          )
+                        )
+                      )
+                    )
+                  ),
+                  List()
+                )
+              )
+            )
+          ) =>
+        assert(true)
+      case Right(other) => fail(s"We didn't parse this correctly: $other")
     }
   }
   test("subsection with bold text and plaintext") {
