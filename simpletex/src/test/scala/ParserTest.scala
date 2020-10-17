@@ -27,8 +27,7 @@ class BasicParser extends AnyFunSuite {
     }
   }
 
-  test("sections should parse correctly") {
-
+  test("sections should NOT parse correctly") {
     SimpleTexParser(Seq(SECTION(), TEXT("section"), TEXT("title"), NEWLINE())) match {
       case Left(value) => fail(s"We didn't parse it correclty: $value")
       case Right(
@@ -39,8 +38,51 @@ class BasicParser extends AnyFunSuite {
         assert(true)
       case Right(value) => fail(s"We parsed into something incorrect $value")
     }
+  }
+
+  test("plaintext should parse correctly") {
+
+    SimpleTexParser(
+      Seq(
+        TEXT("hello"),
+        TEXT("WORLD"),
+        TEXT("hello"),
+        TEXT("WORLD"),
+        TEXT("hello"),
+        TEXT("WORLD")
+      )
+    ) match {
+      case Left(value) => fail(s"We didn't parse it correclty: $value")
+      case Right(
+          Document(
+            List(
+              PlainBody(
+                List(
+                  PlainText(
+                    List("hello", "WORLD", "hello", "WORLD", "hello", "WORLD")
+                  )
+                )
+              )
+            )
+          )
+          ) =>
+        assert(true)
+      case Right(value) => fail(s"We parsed into something incorrect $value")
+    }
+  }
+
+  test("subsections without section's shouldn't parse") {
+
+    SimpleTexParser(
+      Seq(SUBSECTION(), TEXT("subsection"), TEXT("title"), NEWLINE())
+    ) match {
+      case Left(value) => assert(true)
+      case Right(_)    => fail("We don't like subsections without sections")
+    }
 
   }
+
+  test("layout section should parse") {}
 
   test("Bold italics should parse correctly") {
     SimpleTexParser(
