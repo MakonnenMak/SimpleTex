@@ -139,7 +139,24 @@ class ParserSubsectionIntegration extends AnyFunSuite {
     }
   }
   test("subsection with bolditalics text and plaintext") {
-    assert(true)
+    SimpleTexParser(
+      Seq(
+        SECTION(),
+        TEXT("Section"),
+        NEWLINE(),
+        SUBSECTION(),
+        TEXT("my"),
+        TEXT("subsection"),
+        NEWLINE(),
+        TEXT("hello"),
+        BOLDITALICSL(),
+        TEXT("world"),
+        BOLDITALICSR()
+      )
+    ) match {
+      case Left(value)  => fail(s"We didn't parse this correctly: $value")
+      case Right(value) => assert(true)
+    }
   }
   test("subsection with citations and plaintext") {
     assert(true)
