@@ -7,6 +7,7 @@
   */
 package simpletex.lexer
 import scala.util.parsing.combinator._
+import simpletex.compiler.SimpleTexLexerError
 
 sealed trait SimpleTexToken
 
@@ -38,8 +39,6 @@ case class SQUAREL() extends SimpleTexToken
 case class SQUARER() extends SimpleTexToken
 case class EXSQUARE() extends SimpleTexToken
 
-trait SimpleTexCompilationError
-case class SimpleTexLexerError(msg: String) extends SimpleTexCompilationError;
 case object SimpleTexLexer extends RegexParsers {
   override def skipWhitespace = true
   override val whiteSpace = "[ \t\r\f]+".r

@@ -10,5 +10,4 @@ object SimpleTexCompiler {
       ast <- SimpleTexParser(tokens).right
     } yield ast
   }
-
 }

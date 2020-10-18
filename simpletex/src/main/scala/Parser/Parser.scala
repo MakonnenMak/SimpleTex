@@ -6,6 +6,7 @@ import scala.util.parsing.combinator.Parsers
 import scala.util.parsing.input.{NoPosition, Position, Reader}
 import simpletex.lexer._
 import simpletex.parser._
+import simpletex.compiler.SimpleTexParserError
 
 object SimpleTexParser extends Parsers {
   override type Elem = SimpleTexToken
@@ -18,10 +19,12 @@ object SimpleTexParser extends Parsers {
       new SimpleTexTokenReader(tokens.tail)
   }
 
-  def apply(tokens: Seq[SimpleTexToken]): Either[String, SimpleTexAST] = {
+  def apply(
+      tokens: Seq[SimpleTexToken]
+  ): Either[SimpleTexParserError, SimpleTexAST] = {
     val reader = new SimpleTexTokenReader(tokens)
     document(reader) match {
-      case NoSuccess(msg, next)  => Left(msg)
+      case NoSuccess(msg, next)  => Left(SimpleTexParserError(msg))
       case Success(result, next) => Right(result)
     }
   }
@@ -43,8 +46,8 @@ object SimpleTexParser extends Parsers {
         case _ ~ title ~ _ ~ content => Subsection(title, content)
       }
     val section =
-      SECTION() ~ plaintext ~ NEWLINE() ~ rep(subsections) ~ rep(content) ^^ {
-        case _ ~ title ~ _ ~ subsections ~ content =>
+      SECTION() ~ plaintext ~ NEWLINE() ~ rep(content) ~ rep(subsections) ^^ {
+        case _ ~ title ~ _ ~ content ~ subsections =>
           Section(title, subsections, content)
       }
 
@@ -90,8 +93,9 @@ object SimpleTexParser extends Parsers {
       EQUATIONL() ~ plaintext ~ EQUATIONR() ^^ {
         case _ ~ plaintext ~ _ => Equation(plaintext)
       }
+    val newline = NEWLINE() ^^ { case _ => Newline() }
 
-    bold | plaintext | italics | bolditalics | citation | reference | image | equation
+    bold | plaintext | italics | bolditalics | citation | reference | image | equation | newline
   }
 
   def label: Parser[Annotations] =
