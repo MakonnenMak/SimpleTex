@@ -48,7 +48,11 @@ object SimpleTexParser extends Parsers {
     val section =
       SECTION() ~ plaintext ~ NEWLINE() ~ rep(content) ~ rep(subsections) ^^ {
         case _ ~ title ~ _ ~ content ~ subsections =>
-          Section(title, subsections, content)
+          Section(
+            title,
+            subsections,
+            content
+          ) //TODO swap content and subsection
       }
 
     val plainbody = rep1(content) ^^ {
