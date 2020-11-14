@@ -5,14 +5,6 @@ import simpletex.compiler.SimpleTexCompiler
 import simpletex.parser._
 
 class CompilerBasics extends AnyFunSuite {
-  test("compiler code gen practice") {
-    SimpleTexCompiler(
-      "# section 1 \n my content for section one \n ## sub section for 1 \n some plain **and** special text\n # section 2 \n some other content here"
-    ) match {
-      case Right(e) => fail(s"content: $e")
-    }
-
-  }
   test("should compile") {
     SimpleTexCompiler(
       "# section name \n some content\n ## subsection \n here is some"
@@ -40,5 +32,4 @@ class CompilerBasics extends AnyFunSuite {
       case Right(v) => fail(s"We prased something different: $v")
     }
   }
-
 }
