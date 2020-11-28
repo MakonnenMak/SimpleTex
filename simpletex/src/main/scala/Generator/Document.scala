@@ -5,14 +5,14 @@
 package Generator
 
 import collection.mutable.Map
+import Generator.Layout
 
 //TODO define layout class that has map: cell -> string
-class Document(layout: List[String]) {
+class Document(layout: List[Layout]) {
   override def toString = "Some document place holder"
 
-  def update(layoutid: Int, cellid: Int, content: String): Unit = {}
+  def update(layoutID: String, cellID: String, content: String): Unit = {}
   def generateDocument(): String = { "not implemented" }
 
-  //TODO second string is layout objects
-  private val layouts: Map[String, String] = Map()
+  private val layouts: Map[String, Layout] = Map()
 }
