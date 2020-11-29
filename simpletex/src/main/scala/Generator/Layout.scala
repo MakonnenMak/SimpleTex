@@ -2,7 +2,7 @@
  * The layout represents the number of columns, rows, and their respective cell names
  */
 
-package Generator
+package simpletex.generator
 class Layout(
     name: String,
     cols: List[Int],
