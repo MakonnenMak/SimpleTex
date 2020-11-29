@@ -5,6 +5,7 @@
 package Generator
 
 import collection.mutable.Map
+import collection.mutable.Queue
 import Generator.Layout
 
 //TODO define layout class that has map: cell -> string
@@ -14,5 +15,7 @@ class Document(layout: List[Layout]) {
   def update(layoutID: String, cellID: String, content: String): Unit = {}
   def generateDocument(): String = { "not implemented" }
 
-  private val layouts: Map[String, Layout] = Map()
+  private def processLayout(layout: String): String = { "not implemented" }
+  private val accessQueue: Queue[String] = Queue()
+  private val layouts: Map[String, Map[String, String]] = Map()
 }
