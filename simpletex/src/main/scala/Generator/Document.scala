@@ -11,7 +11,10 @@ import collection.mutable.Queue
 class Document(layout: List[Layout]) {
   override def toString = "Some document place holder"
 
-  def update(layoutID: String, cellID: String, content: String): Unit = {}
+  def update(layoutID: String, cellID: String, content: String): Unit = {
+    layouts(layoutID)(cellID) = content
+    accessQueue.addOne(layoutID)
+  }
   def generateDocument(): Either[String, String] = { Left("not implemented") }
 
   private def processLayout(layout: String): Either[String, String] = {
