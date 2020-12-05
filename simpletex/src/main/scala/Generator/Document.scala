@@ -12,9 +12,11 @@ class Document(layout: List[Layout]) {
   override def toString = "Some document place holder"
 
   def update(layoutID: String, cellID: String, content: String): Unit = {}
-  def generateDocument(): String = { "not implemented" }
+  def generateDocument(): Either[String, String] = { Left("not implemented") }
 
-  private def processLayout(layout: String): String = { "not implemented" }
+  private def processLayout(layout: String): Either[String, String] = {
+    Left("not implemented")
+  }
   private val accessQueue: Queue[String] = Queue()
   private val layouts: Map[String, Map[String, String]] = Map()
 }
