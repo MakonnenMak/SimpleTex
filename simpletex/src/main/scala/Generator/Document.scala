@@ -11,8 +11,19 @@ import collection.mutable.Queue
 class Document(layout: List[Layout]) {
   override def toString = "Some document place holder"
 
-  def update(layoutID: String, cellID: String, content: String): Unit = {}
+  def fillLayoutKeys(): Unit = {
+    layout.map(l => layouts.put(l.name, Map()))
+  }
+  def update(layoutID: String, cellID: String, content: String): Unit = {
+    layouts.get(layoutID).flatMap(l => l.put(cellID, content))
+    accessQueue.find(x => x == layoutID) match {
+      case Some(value) => None
+      case None        => accessQueue enqueue layoutID
+    }
+  }
   def generateDocument(): Either[String, String] = { Left("not implemented") }
+
+  fillLayoutKeys()
 
   private def processLayout(layout: String): Either[String, String] = {
     Left("not implemented")
