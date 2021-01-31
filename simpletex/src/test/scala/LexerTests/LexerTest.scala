@@ -188,8 +188,8 @@ class SimpleTokenLexers extends AnyFunSuite {
       case Right(_) =>
         fail("We returned something other than a single new line")
     }
-
   }
+
 }
 class SquareBracketLexer extends AnyFunSuite {
   test("should parse out left square bracket [") {
