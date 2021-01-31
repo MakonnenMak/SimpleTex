@@ -1,12 +1,15 @@
 package simpletex.generator
 import simpletex.generator.Document
-import simpletex.compiler.SimpleTexCompiler
+import simpletex.compiler.{
+  SimpleTexCompiler,
+  SimpleTexCompilationError,
+  SimpleTexGeneratorError
+}
 import simpletex.parser.SimpleTexAST
 
-//TODO: Add Compilation error type
 object DocumentGenerator {
-  def apply(ast: SimpleTexAST): Either[String, Document] = {
-    Left("Not implemented")
+  def apply(ast: SimpleTexAST): Either[SimpleTexCompilationError, Document] = {
+    Left(SimpleTexGeneratorError("not implemented"))
   }
 
 }
