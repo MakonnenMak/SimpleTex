@@ -3,7 +3,7 @@
  */
 
 package simpletex.generator
-class Layout(
+case class Layout(
     name: String,
     cols: List[Int],
     rows: List[Int],

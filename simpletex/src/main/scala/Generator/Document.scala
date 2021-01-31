@@ -14,6 +14,7 @@ class Document(layout: List[Layout]) {
   def fillLayoutKeys(): Unit = {
     layout.map(l => layouts.put(l.name, Map()))
   }
+
   def update(layoutID: String, cellID: String, content: String): Unit = {
     layouts.get(layoutID).flatMap(l => l.put(cellID, content))
     accessQueue.find(x => x == layoutID) match {
