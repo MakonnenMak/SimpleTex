@@ -21,4 +21,18 @@ object DocumentGenerator {
     Left(SimpleTexGeneratorError("not implemented"))
   }
 
+  /* def bold ..
+   * def italics ...
+   *
+   *
+   */
+  /* def section(...) match
+ *
+ * bold:  -> bold(content) or produce here \bf ...
+ * italics: -> \it...
+ *
+ *
+ *
+ *
+ */
 }
