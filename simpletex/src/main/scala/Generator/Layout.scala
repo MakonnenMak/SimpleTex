@@ -5,12 +5,12 @@
 package simpletex.generator
 case class Layout(
     name: String,
-    cols: List[Int],
-    rows: List[Int],
+    colSizes: List[Int],
+    rowSizes: List[Int],
     cellNames: List[List[String]]
 ) {
 
   override def toString(): String =
-    f"Name: ${name} \n Columns: ${cols} \n Rows: ${rows} \n Cell Names: ${cellNames}"
+    f"Name: ${name} \n Columns: ${colSizes} \n Rows: ${rowSizes} \n Cell Names: ${cellNames}"
 
 }

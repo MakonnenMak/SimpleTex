@@ -8,7 +8,11 @@ import simpletex.compiler.{
 import simpletex.parser.SimpleTexAST
 
 object DocumentGenerator {
-  def apply(ast: SimpleTexAST): Either[SimpleTexCompilationError, Document] = {
+  def apply(
+      ast: SimpleTexAST,
+      layout: List[Layout]
+  ): Either[SimpleTexCompilationError, Document] = {
+    val doc = Document(layout)
     Left(SimpleTexGeneratorError("not implemented"))
   }
 

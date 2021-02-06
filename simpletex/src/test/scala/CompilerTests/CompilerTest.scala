@@ -12,20 +12,20 @@ class CompilerBasics extends AnyFunSuite {
       case Left(e) =>
         fail(s"took a left: $e")
       case Right(
-          Document(
-            List(
-              Section(
-                PlainText(List("section", "name")),
-                List(
-                  Subsection(
-                    PlainText(List("subsection")),
-                    List(PlainText(List("here", "is", "some")))
-                  )
-                ),
-                List(PlainText(List("some", "content")), Newline())
+            Document(
+              List(
+                Section(
+                  PlainText(List("section", "name")),
+                  List(
+                    Subsection(
+                      PlainText(List("subsection")),
+                      List(PlainText(List("here", "is", "some")))
+                    )
+                  ),
+                  List(PlainText(List("some", "content")), Newline())
+                )
               )
             )
-          )
           ) =>
         assert(true)
 
