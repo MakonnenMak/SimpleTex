@@ -5,8 +5,13 @@ import simpletex.compiler.{
   SimpleTexCompilationError,
   SimpleTexGeneratorError
 }
-import simpletex.parser.SimpleTexAST
+import simpletex.parser.{SimpleTexAST, Content}
 
+object Generator {
+  def generateAST(node: SimpleTexAST)
+  def generateContent(node: Content)
+  def apply(node: SimpleTexAST)
+}
 object DocumentGenerator {
   def apply(
       ast: SimpleTexAST,
