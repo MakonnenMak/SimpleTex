@@ -1,7 +1,8 @@
 package simpletex.compiler;
 import org.scalatest.funsuite.AnyFunSuite
 
-import simpletex.compiler.{SimpleTexCompiler, DocumentGenerator, Document}
+import simpletex.compiler.SimpleTexCompiler
+import simpletex.generator.{DocumentGenerator, LatexDocument}
 import simpletex.parser._
 import simpletex.generator.Layout
 
@@ -11,7 +12,12 @@ import simpletex.generator.Layout
 class GeneratorTests extends AnyFunSuite {
   test("ProcessLayout Basic Test") {
     val testLayout =
-      Layout("layout1", List(50, 50), List(50, 50), List("1", "2", "3", "4"))
+      Layout(
+        "layout1",
+        List(50, 50),
+        List(50, 50),
+        List(List("1", "2"), List("3", "4"))
+      )
     DocumentGenerator(
       Document(
         List(
@@ -35,11 +41,11 @@ class GeneratorTests extends AnyFunSuite {
           )
         )
       ),
-      testLayout
+      List(testLayout)
     ) match {
       case Left(e) =>
         fail(s"took a left: $e")
-      case Right(e) => println(e)
+      case Right(e) => assert(true)
     }
   }
 

@@ -9,7 +9,7 @@ import collection.mutable.Queue
 import simpletex.compiler.{SimpleTexCompilationError, SimpleTexGeneratorError}
 
 //TODO define layout class that has map: cell -> string
-class Document(layout: List[Layout]) {
+case class LatexDocument(layout: List[Layout]) {
   override def toString = "Some document place holder"
 
   def fillLayoutKeys(): Unit = {

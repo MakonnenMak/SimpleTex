@@ -1,5 +1,5 @@
 package simpletex.generator
-import simpletex.generator.Document
+import simpletex.generator.LatexDocument
 import simpletex.compiler.{
   SimpleTexCompiler,
   SimpleTexCompilationError,
@@ -11,8 +11,8 @@ object DocumentGenerator {
   def apply(
       ast: SimpleTexAST,
       layout: List[Layout]
-  ): Either[SimpleTexCompilationError, Document] = {
-    val doc = Document(layout)
+  ): Either[SimpleTexCompilationError, LatexDocument] = {
+    val doc = LatexDocument(layout)
     Left(SimpleTexGeneratorError("not implemented"))
   }
 
