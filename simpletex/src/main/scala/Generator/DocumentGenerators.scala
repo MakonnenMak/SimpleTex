@@ -5,12 +5,33 @@ import simpletex.compiler.{
   SimpleTexCompilationError,
   SimpleTexGeneratorError
 }
-import simpletex.parser.{SimpleTexAST, Content}
+import simpletex.parser._
 
 object Generator {
-  def generateAST(node: SimpleTexAST)
-  def generateContent(node: Content)
-  def apply(node: SimpleTexAST)
+  def generateAST(node: SimpleTexAST) = {
+    // decide what to do here
+  }
+  def generateContent(node: Content): String = {
+    // pattern match on the content types
+    "Not found"
+  }
+  def apply(node: SimpleTexAST): String = node match {
+    case Document(body) =>
+      body
+        .map(Generator(_))
+        .mkString // do we want to convert to a string this way
+    case Section(name, subsection, content) =>
+      // add in the section name properly
+      val subs = subsection.map(Generator(_)).mkString
+      val sectionBody: String = content.map(generateContent(_)).mkString
+      name + sectionBody + subs
+    case Subsection(name, content) =>
+      name + content.map(generateContent(_)).mkString
+    case PlainBody(content) =>
+      content.map(generateContent(_)).mkString
+    case LayoutSection(name, section) =>
+      name + Generator(section)
+  }
 }
 object DocumentGenerator {
   def apply(
