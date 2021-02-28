@@ -16,12 +16,13 @@ case class LatexDocument(layout: List[Layout]) {
     layout.foreach(l => layouts.put(l.name, Map()))
   }
 
-  def update(layoutID: String, cellID: String, content: String): Unit = {
+  def update(layoutID: String, cellID: String, content: String): String = {
     layouts.get(layoutID).flatMap(l => l.put(cellID, content))
     accessQueue.find(x => x == layoutID) match {
       case Some(value) => None
       case None        => accessQueue enqueue layoutID
     }
+    content
   }
   def generateDocument(): Either[String, String] = { Left("not implemented") }
   // ast map (BOLD => "this is bold") ==> all bold nodes should be "this..."
