@@ -11,7 +11,8 @@ import simpletex.compiler.{SimpleTexCompilationError, SimpleTexGeneratorError}
 //TODO define layout class that has map: cell -> string
 case class LatexDocument(layout: List[Layout]) {
   override def toString = "Some document place holder"
-
+  private val layouts: Map[String, Map[String, String]] = Map()
+  private val accessQueue: Queue[String] = Queue()
   def fillLayoutKeys(): Unit = {
     layout.foreach(l => layouts.put(l.name, Map()))
   }
@@ -24,7 +25,9 @@ case class LatexDocument(layout: List[Layout]) {
     }
     content
   }
-  def generateDocument(): Either[String, String] = { Left("not implemented") }
+  def generateDocument(): Either[SimpleTexGeneratorError, String] = {
+    Left(SimpleTexGeneratorError("Generate document faied"))
+  }
   // ast map (BOLD => "this is bold") ==> all bold nodes should be "this..."
   // ast map (Section => "section ... children") ==> all sections and their children pass through the function
   //      ^^^ subsection should never pass through the function
@@ -37,6 +40,4 @@ case class LatexDocument(layout: List[Layout]) {
   ): Either[SimpleTexCompilationError, String] = {
     Left(SimpleTexGeneratorError("not implemented"))
   }
-  private val accessQueue: Queue[String] = Queue()
-  private val layouts: Map[String, Map[String, String]] = Map()
 }

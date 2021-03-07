@@ -13,22 +13,25 @@ object DocumentGenerator {
       layout: List[Layout]
   ): Either[SimpleTexCompilationError, LatexDocument] = {
     val doc = LatexDocument(layout)
-
+    val generatedLatexAST = generateAST(doc)(ast);
+    doc.generateDocument()
+    println(generatedLatexAST);
     Left(SimpleTexGeneratorError("not implemented"))
   }
-  def generateContent(node: Content): String = node match {
-    case PlainText(text) => text.mkString(" ")
-    case Bold(text)      => s"\textbf{${generateContent(text)}}"
-    case Italics(text)   => s"\textit{${generateContent(text)}}"
-    case BoldItalics(text) =>
-      generateContent(Bold(PlainText(Seq(generateContent(Italics(text))))))
-    case Citation(text)  => s"\\cite{${generateContent(text)}}"
-    case Reference(text) => s"\\ref${generateContent(text)}}"
-    case Image(caption, path) =>
-      s"\\begin{figure}[h] \\centering \\includegraphics[width=0.8\\linewidth]{${generateContent(path)}} \\caption{${generateContent(caption)}}% \\label{fig:{caption.subString(0,5)}} \\end{figure}"
-    case Equation(text) => "$" + generateContent(text) + "$"
-    case Newline()      => "\n" //TODO do we want an empty line or just a new line?
-  }
+  def generateContent(node: Content): String =
+    node match {
+      case PlainText(text) => text.mkString(" ")
+      case Bold(text)      => s"\textbf{${generateContent(text)}}"
+      case Italics(text)   => s"\textit{${generateContent(text)}}"
+      case BoldItalics(text) =>
+        generateContent(Bold(PlainText(Seq(generateContent(Italics(text))))))
+      case Citation(text)  => s"\\cite{${generateContent(text)}}"
+      case Reference(text) => s"\\ref${generateContent(text)}}"
+      case Image(caption, path) =>
+        s"\\begin{figure}[h] \\centering \\includegraphics[width=0.8\\linewidth]{${generateContent(path)}} \\caption{${generateContent(caption)}}% \\label{fig:{caption.subString(0,5)}} \\end{figure}"
+      case Equation(text) => "$" + generateContent(text) + "$"
+      case Newline()      => "\n" //TODO do we want an empty line or just a new line?
+    }
   def generateAST(doc: LatexDocument)(node: SimpleTexAST): String = {
     val generator: SimpleTexAST => String = generateAST(doc)
     node match {
@@ -40,7 +43,7 @@ object DocumentGenerator {
         val subs = subsection.map(generator(_)).mkString
         val sectionBody: String =
           content.map(generateContent(_)).mkString + "\n"
-        "\\section{" + name + "}\n" + sectionBody + subs
+        "\\section{" + generateContent(name) + "}\n" + sectionBody + subs
       case Subsection(name, content) =>
         "\\subsection{" + name + "}" + content
           .map(generateContent(_))
