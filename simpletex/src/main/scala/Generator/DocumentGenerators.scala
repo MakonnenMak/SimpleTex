@@ -11,12 +11,12 @@ object DocumentGenerator {
   def apply(
       ast: SimpleTexAST,
       layout: List[Layout]
-  ): Either[SimpleTexCompilationError, LatexDocument] = {
+  ): LatexDocument = {
     val doc = LatexDocument(layout)
     val generatedLatexAST = generateAST(doc)(ast);
+    //println(generatedLatexAST)
     doc.generateDocument()
-    println(generatedLatexAST);
-    Left(SimpleTexGeneratorError("not implemented"))
+    doc
   }
   def generateContent(node: Content): String =
     node match {
@@ -51,7 +51,7 @@ object DocumentGenerator {
       case PlainBody(content) =>
         content.map(generateContent(_)).mkString
       case LayoutSection(name, section) =>
-        generateContent(name).split(".") match {
+        generateContent(name).split("\\.") match {
           case Array(a, b) => doc.update(a, b, generator(section))
           case array       => s"WRONG TYPE: $array"
         }

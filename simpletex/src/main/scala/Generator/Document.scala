@@ -4,13 +4,12 @@
  */
 package simpletex.generator
 
-import collection.mutable.Map
+import collection.mutable.{Map, ArrayBuffer}
 import collection.mutable.Queue
 import simpletex.compiler.{SimpleTexCompilationError, SimpleTexGeneratorError}
 
 //TODO define layout class that has map: cell -> string
 case class LatexDocument(layout: List[Layout]) {
-  override def toString = "Some document place holder"
   private val layouts: Map[String, Map[String, String]] = Map()
   private val accessQueue: Queue[String] = Queue()
   def fillLayoutKeys(): Unit = {
@@ -25,8 +24,21 @@ case class LatexDocument(layout: List[Layout]) {
     }
     content
   }
+  // TODO rewrite this ugly shit
   def generateDocument(): Either[SimpleTexGeneratorError, String] = {
-    Left(SimpleTexGeneratorError("Generate document faied"))
+    layouts
+      .map({ case (k, v) => processLayout(k, v) })
+      .partitionMap {
+        case Left(error) => Left(error)
+        case Right(str)  => Right(str)
+      } match {
+      case (ArrayBuffer(), b) =>
+        Right(
+          b.reduce((a, c) => a + c)
+        ) //TODO where is the second right hello???
+      case (a, b) => Left(SimpleTexGeneratorError(s"something went wrong: $a"))
+    }
+
   }
   // ast map (BOLD => "this is bold") ==> all bold nodes should be "this..."
   // ast map (Section => "section ... children") ==> all sections and their children pass through the function
@@ -36,8 +48,9 @@ case class LatexDocument(layout: List[Layout]) {
   /* Called by `generateDocument` to process a single layout object.
    */
   private def processLayout(
-      layout: String
+      layout: String,
+      cell: Map[String, String]
   ): Either[SimpleTexCompilationError, String] = {
-    Left(SimpleTexGeneratorError("not implemented"))
+    Right("hello")
   }
 }
