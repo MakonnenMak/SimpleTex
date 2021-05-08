@@ -15,7 +15,14 @@ class GeneratorTests extends AnyFunSuite {
         "layout1",
         List(50, 50),
         List(50, 50),
-        List(List("1", "2"), List("3", "4"))
+        List(List("name1", "name2"), List("name3", "name4"))
+      )
+    val testLayout2 =
+      Layout(
+        "layout2",
+        List(50, 50),
+        List(50, 50),
+        List(List("name1", "name2"), List("name3", "name4"))
       )
     val doc = DocumentGenerator(
       Document(
@@ -43,10 +50,22 @@ class GeneratorTests extends AnyFunSuite {
                 PlainText(List("hello", "hello"))
               )
             )
+          ),
+          LayoutSection(
+            PlainText(Seq("layout2.name1")),
+            Section(
+              PlainText(List("New Section")),
+              List(),
+              List(
+                PlainText(List("my", "new", "section")),
+                Newline(),
+                PlainText(List("hello", "world", "earth"))
+              )
+            )
           )
         )
       ),
-      List(testLayout)
+      List(testLayout, testLayout2)
     )
 
     fail(s"failed with: ${doc.generateDocument()}")

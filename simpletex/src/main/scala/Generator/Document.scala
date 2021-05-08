@@ -48,9 +48,27 @@ case class LatexDocument(layout: List[Layout]) {
   /* Called by `generateDocument` to process a single layout object.
    */
   private def processLayout(
-      layout: String,
+      layoutName: String,
       cell: Map[String, String]
   ): Either[SimpleTexCompilationError, String] = {
-    Right("hello")
+
+    val latex = layout.find(a => a.name == layoutName) match {
+      case Some(value) =>
+        //TODO clean this up
+        s"\n col ${value.colSizes} row ${value.rowSizes}" +
+          value.cellNames.flatMap(x =>
+            x.map(y =>
+              s"\n begin cell ${y}\n ${cell.get(y) match {
+                case Some(value) => value
+                case None        => ""
+              }}" + s"\n end cell ${y}\n"
+            )
+          )
+      case None => ""
+    }
+
+    println(s"CELL: ${cell.mkString}")
+    Right(latex)
+
   }
 }

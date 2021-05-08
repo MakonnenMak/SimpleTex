@@ -15,7 +15,7 @@ object DocumentGenerator {
     val doc = LatexDocument(layout)
     val generatedLatexAST = generateAST(doc)(ast);
     //println(generatedLatexAST)
-    doc.generateDocument()
+    //doc.generateDocument()
     doc
   }
   def generateContent(node: Content): String =
