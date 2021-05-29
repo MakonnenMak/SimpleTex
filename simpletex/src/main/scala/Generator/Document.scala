@@ -51,19 +51,21 @@ case class LatexDocument(layout: List[Layout]) {
       layoutName: String,
       cell: Map[String, String]
   ): Either[SimpleTexCompilationError, String] = {
-
+    
     val latex = layout.find(a => a.name == layoutName) match {
-      case Some(value) =>
-        //TODO clean this up
-        s"\n col ${value.colSizes} row ${value.rowSizes}" +
-          value.cellNames.flatMap(x =>
-            x.map(y =>
-              s"\n begin cell ${y}\n ${cell.get(y) match {
+      case Some(row) =>
+	//Something like \begin Row here
+        //TODO call helper method to generate cell latex here 
+        s"\n col ${row.colSizes} row ${row.rowSizes}" +
+          row.cellNames.flatMap(col =>
+            col.map(content =>
+              s"\n \\begin {Cell}  ${content}\n ${cell.get(content) match {
                 case Some(value) => value
                 case None        => ""
-              }}" + s"\n end cell ${y}\n"
+              }}" + s"\n \\end {Cell} ${content}\n"
             )
           )
+	//Something like \end Row here
       case None => ""
     }
 
