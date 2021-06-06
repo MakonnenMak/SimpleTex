@@ -45,27 +45,29 @@ case class LatexDocument(layout: List[Layout]) {
   //      ^^^ subsection should never pass through the function
   fillLayoutKeys()
 
-  /* Called by `generateDocument` to process a single layout object.
-   */
-  private def processLayout(
-      layoutName: String,
-      cell: Map[String, String]
-  ): Either[SimpleTexCompilationError, String] = {
-    
-    val latex = layout.find(a => a.name == layoutName) match {
-      case Some(row) =>
-	//Something like \begin Row here
-        //TODO call helper method to generate cell latex here 
-        s"\n col ${row.colSizes} row ${row.rowSizes}" +
-          row.cellNames.flatMap(col =>
+  private def generateCell(col:List[String], cell:Map[String,String]):List[String]={
             col.map(content =>
               s"\n \\begin {Cell}  ${content}\n ${cell.get(content) match {
                 case Some(value) => value
                 case None        => ""
               }}" + s"\n \\end {Cell} ${content}\n"
             )
-          )
-	//Something like \end Row here
+  }
+
+  /* Called by `generateDocument` to process a single layout object.
+   */
+  private def processLayout(
+      layoutName: String,
+      cell: Map[String, String]
+  ): Either[SimpleTexCompilationError, String] = {
+    val latex = layout.find(a => a.name == layoutName) match {
+      case Some(row) =>
+        "\\begin {Row}"+
+        s"\n col ${row.colSizes} row ${row.rowSizes}" +
+          row.cellNames.flatMap(col =>
+              generateCell(col,cell)
+              ).mkString +
+        "\\end {Row}"
       case None => ""
     }
 
