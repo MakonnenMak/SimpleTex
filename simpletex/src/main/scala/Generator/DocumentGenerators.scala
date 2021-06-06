@@ -30,7 +30,8 @@ object DocumentGenerator {
       case Image(caption, path) =>
         s"\\begin{figure}[h] \\centering \\includegraphics[width=0.8\\linewidth]{${generateContent(path)}} \\caption{${generateContent(caption)}}% \\label{fig:{caption.subString(0,5)}} \\end{figure}"
       case Equation(text) => "$" + generateContent(text) + "$"
-      case Newline()      => "\n\n" //TODO do we want an empty line or just a new line?
+      case Newline() =>
+        "\n\n" //TODO do we want an empty line or just a new line?
     }
   def generateAST(doc: LatexDocument)(node: SimpleTexAST): String = {
     val generator: SimpleTexAST => String = generateAST(doc)

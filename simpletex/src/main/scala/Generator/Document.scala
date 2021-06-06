@@ -45,13 +45,17 @@ case class LatexDocument(layout: List[Layout]) {
   //      ^^^ subsection should never pass through the function
   fillLayoutKeys()
 
-  private def generateCell(col:List[String], cell:Map[String,String]):List[String]={
-            col.map(content =>
-              s"\n \\begin {Cell}  ${content}\n ${cell.get(content) match {
-                case Some(value) => value
-                case None        => ""
-              }}" + s"\n \\end {Cell} ${content}\n"
-            )
+  private def generateCell(
+      col: List[String],
+      cell: Map[String, String],
+      cellSize: Int
+  ): List[String] = {
+    col.map(colId =>
+      s"\n \\begin{Cell}{${cellSize}} \n ${cell.get(colId) match {
+        case Some(value) => value
+        case None        => ""
+      }}" + s"\n \\end{Cell}"
+    )
   }
 
   /* Called by `generateDocument` to process a single layout object.
@@ -62,16 +66,18 @@ case class LatexDocument(layout: List[Layout]) {
   ): Either[SimpleTexCompilationError, String] = {
     val latex = layout.find(a => a.name == layoutName) match {
       case Some(row) =>
-        "\\begin {Row}"+
-        s"\n col ${row.colSizes} row ${row.rowSizes}" +
-          row.cellNames.flatMap(col =>
-              generateCell(col,cell)
-              ).mkString +
-        "\\end {Row}"
+        "\n\\begin{Row}" +
+          row.cellNames
+            .zip(row.colSizes)
+            .flatMap({
+              case ((col: List[String], colSize: Int)) =>
+                generateCell(col, cell, colSize)
+            })
+            .mkString +
+          "\n\\end{Row}\n"
       case None => ""
     }
 
-    println(s"CELL: ${cell.mkString}")
     Right(latex)
 
   }
